@@ -38,6 +38,7 @@ function animation()
 end
 
 function love.draw()
+    
 
     cam:attach()
         for i = 0, love.graphics.getWidth() / background:getWidth() do
@@ -47,6 +48,7 @@ function love.draw()
         end
         player:draw()
         --love.graphics.setColor(0, 0, 0)
-        love.graphics.print(love.timer.getFPS(), 10, 10)
     cam:detach()
+
+    love.graphics.print(love.timer.getFPS(), 10, 10)
 end
