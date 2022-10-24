@@ -1,6 +1,6 @@
-function Vector()
-    local o_angle = 0
-    local o_magnitude = 0
+function Vector(a,m)
+    local o_angle = a
+    local o_magnitude = m
     local PI = math.pi
 
     local function radians(angle)

@@ -1,10 +1,14 @@
 local love = require "love"
-_G.vector = require "../libraries/Vector"
+_G.vector = require "libraries/Vector"
 
 function Enemy(level) -- we now take in the enemy level
     local dice = math.random(1, 4)
     local _x, _y
     local _radius = 20
+    
+   local function distanceFrom(x1,y1,x2,y2) 
+        return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2) 
+    end
 
     if dice == 1 then -- come from above --
         _x = math.random(_radius, love.graphics.getWidth())
@@ -33,6 +37,8 @@ function Enemy(level) -- we now take in the enemy level
         end,
 
         move = function (self, player_x, player_y)
+           
+
             if player_x - self.x > 0 then
                 self.x = self.x + self.level
             elseif player_x - self.x < 0 then
@@ -44,6 +50,9 @@ function Enemy(level) -- we now take in the enemy level
             elseif player_y - self.y < 0 then
                 self.y = self.y - self.level
             end
+            
+            --self.x = self.x + player_x
+           -- self.y = self.y + player_y
         end,
 
         draw = function (self)
