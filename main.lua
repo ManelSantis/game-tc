@@ -1,18 +1,32 @@
 _G.love = require("love")
 _G.camera = require("libraries/camera")
 local player = require ("player")
+local enemy = require "objects/enemy"
 
 function love.load()
     _G.cam = camera()
     local show_debugging = true
 
-    background = love.graphics.newImage("img/jammy-jellyfish-wallpaper.jpg")
+    _G.background = love.graphics.newImage("img/jammy-jellyfish-wallpaper.jpg")
     player = Player(show_debugging, background:getWidth(), background:getHeight())
+
+    _G.enemies = {
+        enemy(1)
+    } 
 end
 
 function love.update(dt)
-        player:movePlayer()
-        cam:lookAt(player.x, player.y)
+    player:movePlayer()
+    cam:lookAt(player.x,player.y)
+
+
+    for i = 1, #enemies do
+        if not enemies[i]:checkTouched(player.x, player.y, player.size) then
+            enemies[i]:move(player.x, player.y)    
+            --table.insert(enemies, 1, enemy(2))
+
+        end
+    end
 
         local w = background:getWidth() - love.graphics.getWidth() / 2
         local h = background:getHeight() - love.graphics.getHeight() / 2
@@ -42,6 +56,9 @@ function love.draw()
             for j = 0, love.graphics.getHeight() / background:getHeight() do
                 love.graphics.draw(background, i * background:getWidth(), j * background:getHeight())
             end
+        end
+        for i = 1, #enemies do
+            enemies[i]:draw()
         end
         player:draw()
         --love.graphics.setColor(0, 0, 0)
