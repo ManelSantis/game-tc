@@ -32,7 +32,7 @@ function love.update(dt)
 
     --if #scene > 0 then
     for i = 1, #scene do
-        scene[i]:moveMunition()
+        scene[i]:moveMunition(dt)
     end
     --end
 
@@ -46,7 +46,7 @@ function love.update(dt)
     end
 
     if cam.x < ww then 
-        cam.x = ww
+        cam.x = ww 
     end 
 
     if cam.y > h then
@@ -58,7 +58,7 @@ function love.update(dt)
     end 
 
     if atirar == true and love.keyboard.isDown("space") then
-        munition = Munition(love.mouse.getX(),love.mouse.getY(), player.x, player.y)
+        munition = Munition(love.mouse.getX(), love.mouse.getY(), player.x, player.y)
         table.insert(scene, munition)
         atirar = false
     elseif not love.keyboard.isDown("space") then
@@ -79,18 +79,12 @@ function love.draw()
         end
         player:draw()
 
+        love.graphics.setColor(1, 0, 0)
         for i = 1, #scene do
             scene[i]:draw()
         end
-        --love.graphics.setColor(0, 0, 0)
+        love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
     cam:detach()
 
-    
-
-    love.graphics.print(love.timer.getFPS(), 10, 10)
-    love.graphics.print(player.x, 50, 50)
-    love.graphics.print(player.y, 60, 60)
-    love.graphics.print(#scene, 80, 80)
-    
 end
 

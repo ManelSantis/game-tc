@@ -1,4 +1,4 @@
-function Vector(a,m)
+function Vector(a, m)
     local o_angle = a
     local o_magnitude = m
     local PI = math.pi
