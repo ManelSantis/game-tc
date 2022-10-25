@@ -3,8 +3,9 @@ _G.camera = require "libraries/camera"
 _G.background = love.graphics.newImage("img/jammy-jellyfish-wallpaper.jpg")
 _G.world = love.physics.newWorld(0, 0, true)
 _G.player = require "player"
+_G.objectsOnScene = {}
+local shootsOnScene = {}
 
-local scene = {}
 local enemy = require "objects/enemy"
 local munition = require "objects/munition"
 local atirar = true
@@ -15,10 +16,14 @@ function love.load()
 
     player = Player(background:getWidth(), background:getHeight(), world, 30, 250, 250)
     player:createPlayer()
-    
+    table.insert(objectsOnScene, player)
+
+    enemy = Enemy(1, world, 20)
+    enemy:createEnemy()
     _G.enemies = {
-        enemy(1)
+        enemy
     } 
+    table.insert(objectsOnScene, enemy)
 end
 
 function love.update(dt)
@@ -27,15 +32,14 @@ function love.update(dt)
 
     for i = 1, #enemies do
         if not enemies[i]:checkTouched(player.x, player.y, player.size) then
-            enemies[i]:move(player.x, player.y)    
+            enemies[i]:moveEnemy(player.x, player.y)    
             --table.insert(enemies, 1, enemy(2))
-
         end
     end
 
     --if #scene > 0 then
-    for i = 1, #scene do
-        scene[i]:moveMunition(dt)
+    for i = 1, #shootsOnScene do
+        shootsOnScene[i]:moveMunition(dt)
     end
     --end
 
@@ -62,8 +66,10 @@ function love.update(dt)
 
     if atirar == true and love.mouse.isDown(1) then
         mouseX, mouseY = cam:mousePosition()
-        munition = Munition(mouseX, mouseY, player.x, player.y)
-        table.insert(scene, munition)
+        munition = Munition(mouseX, mouseY, player.x, player.y, world)
+        munition:createMunition()
+        table.insert(objectsOnScene, munition)
+        table.insert(shootsOnScene, munition)
         atirar = false
     elseif not love.mouse.isDown(1) then
         atirar = true
@@ -80,24 +86,15 @@ function love.draw()
                 love.graphics.draw(background, i * background:getWidth(), j * background:getHeight())
             end
         end
-        for i = 1, #enemies do
-            enemies[i]:draw()
-        end
         
         for i, body in pairs(world:getBodies()) do
-            for i, fixture in pairs (body:getFixtures()) do
+            --objectsOnScene[i]:color()
+            for j, fixture in pairs (body:getFixtures()) do
                 local shape = fixture:getShape()
                 local cx, cy = body:getWorldPoints(shape:getPoint())
-                love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
                 love.graphics.circle("fill", cx, cy, shape:getRadius())
             end
         end
-
-        love.graphics.setColor(1, 0, 0)
-        for i = 1, #scene do
-            scene[i]:draw()
-        end
-        love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
     cam:detach()
 
     --local mouseX = love.mouse.getX() * cam.scale + cam.x

@@ -29,27 +29,31 @@ function Player(limit_x, limit_y, _world, _size, speedX, speedY)
             if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
                 if self.x > (0 + self.size) then
                     self.x = self.x - speedX * dt
-                    self.body:setX(self.x)
                 end
             end
 
             if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
                 if self.y < (self.ly - self.size) then
                     self.y = self.y + speedY * dt
-                    self.body:setY(self.y)
-
                 end
             end
 
             if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
                 if self.y > (0 + self.size) then
                     self.y = self.y - speedY * dt
-                    self.body:setY(self.y)
-
                 end
-            end        
+            end   
+            
+            self.body:setX(self.x)
+            self.body:setY(self.y)
+
+        end,
+        color = function (self)
+            love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
         end
 
     }
 
 end
+
+return Player
