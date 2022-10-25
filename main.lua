@@ -1,7 +1,10 @@
-_G.love = require("love")
-_G.camera = require("libraries/camera")
+_G.love = require "love" 
+_G.camera = require "libraries/camera"
+_G.background = love.graphics.newImage("img/jammy-jellyfish-wallpaper.jpg")
+_G.world = love.physics.newWorld(0, 0, true)
+_G.player = require "player"
+
 local scene = {}
-local player = require "player"
 local enemy = require "objects/enemy"
 local munition = require "objects/munition"
 local atirar = true
@@ -10,8 +13,8 @@ function love.load()
     _G.cam = camera()
     local show_debugging = true
 
-    _G.background = love.graphics.newImage("img/jammy-jellyfish-wallpaper.jpg")
-    player = Player(show_debugging, background:getWidth(), background:getHeight())
+    player = Player(background:getWidth(), background:getHeight(), world, 30, 250, 250)
+    player:createPlayer()
     
     _G.enemies = {
         enemy(1)
@@ -19,7 +22,7 @@ function love.load()
 end
 
 function love.update(dt)
-    player:movePlayer()
+    player:movePlayer(dt)
     cam:lookAt(player.x,player.y)
 
     for i = 1, #enemies do
@@ -57,13 +60,16 @@ function love.update(dt)
         cam.y = hh
     end 
 
-    if atirar == true and love.keyboard.isDown("space") then
-        munition = Munition(love.mouse.getX(), love.mouse.getY(), player.x, player.y)
+    if atirar == true and love.mouse.isDown(1) then
+        mouseX, mouseY = cam:mousePosition()
+        munition = Munition(mouseX, mouseY, player.x, player.y)
         table.insert(scene, munition)
         atirar = false
-    elseif not love.keyboard.isDown("space") then
+    elseif not love.mouse.isDown(1) then
         atirar = true
     end
+
+    world:update(dt, 1, 1)
 end
 
 function love.draw()
@@ -77,7 +83,15 @@ function love.draw()
         for i = 1, #enemies do
             enemies[i]:draw()
         end
-        player:draw()
+        
+        for i, body in pairs(world:getBodies()) do
+            for i, fixture in pairs (body:getFixtures()) do
+                local shape = fixture:getShape()
+                local cx, cy = body:getWorldPoints(shape:getPoint())
+                love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
+                love.graphics.circle("fill", cx, cy, shape:getRadius())
+            end
+        end
 
         love.graphics.setColor(1, 0, 0)
         for i = 1, #scene do
@@ -86,5 +100,23 @@ function love.draw()
         love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
     cam:detach()
 
+    --local mouseX = love.mouse.getX() * cam.scale + cam.x
+    --local mouseY = love.mouse.getY() * cam.scale + cam.y
+    mouseX, mouseY = cam:mousePosition()
+    local o_angle = 0
+    local PI = math.pi
+
+    local w = player.x
+    local h = player.y
+    
+    local deltaX = mouseX - w
+    local deltaY = mouseY - h
+
+    local rad = math.atan2(deltaY, deltaX)
+    --rad = (rad*PI)/360
+    love.graphics.print(-math.deg(rad), 50, 50)
+
+    love.graphics.print(250 * math.cos(rad), 70, 70)
+    love.graphics.print(250 * math.cos(rad), 90, 90)
 end
 

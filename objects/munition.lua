@@ -4,25 +4,22 @@ local vel = require("./libraries/Vector")
 
 function Munition(mouseX, mouseY, initX, initY)
 
-    local o_mag = math.sqrt(mouseX^2 + mouseY^2)
-    local o_angle = 0
-    local PI = math.pi
+    local speed = 250
 
     local w = initX
     local h = initY
     
-    local deltaX = mouseX - w
-    local deltaY = mouseY - h
-    o_angle = math.atan2(deltaY, deltaX)
-
-    --local rad = math.atan2(deltaY, deltaX)
-    --o_angle = rad * (360 / PI)
-
+    local deltaX = mouseX - w 
+    local deltaY = mouseY - h 
+   
+    local o_angle = math.atan2(deltaY, deltaX)
+    o_angle = -math.deg(o_angle)
+    --o_angle = (o_angle*math.pi)/360
     --vel = Vector(o_angle, o_mag)
 
     return {
-        dx = 250 * math.cos(o_angle),
-        dy = 250 * math.sin(o_angle),
+        dx = speed * math.cos(o_angle),
+        dy = speed * math.sin(o_angle),
         x = initX,
         y = initY,
         inScreen = true,
