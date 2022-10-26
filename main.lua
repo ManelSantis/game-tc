@@ -23,7 +23,7 @@ function love.update(dt)
     Player:update(dt)
     cam:lookAt(Player.x, Player.y) 
     if not Enemy:checkTouched(Player.x, Player.y, Player.size) then 
-        Enemy:update(dt, Player.x, Player.y)
+        Enemy:update(dt, Player.body:getX(), Player.body:getY())
     end
     Bullet.updateAll(dt)
     VerifyCam()

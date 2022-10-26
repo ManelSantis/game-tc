@@ -24,6 +24,7 @@ function Enemy:load(_level, _size)
     self.size = _size
 
     self.body = love.physics.newBody (World, self.x, self.y, "dynamic")
+    self.body:setMass(10)
     self.shape = love.physics.newCircleShape(self.size)
     self.fixture = love.physics.newFixture(self.body, self.shape, 1)
            
@@ -35,6 +36,7 @@ function Enemy:update(dt, player_x, player_y)
 end
 
 function Enemy:move(dt, player_x, player_y)
+    --[[
     if player_x - self.x > 0 then
         self.x = self.x + self.level
     elseif player_x - self.x < 0 then
@@ -47,8 +49,17 @@ function Enemy:move(dt, player_x, player_y)
         self.y = self.y - self.level
     end
     
-    self.body:setX(self.x)
-    self.body:setY(self.y)
+    ]]
+    --self.body:setY(self.y)
+    --self.body:setX(self.x)
+    _G.angle = math.deg( math.atan2(self.body:getY() - player_y, self.body:getX() - player_x))
+    if angle > 0 then
+        angle =  -(angle - 180)
+        self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
+    else
+        angle  = (-angle) + 180 
+        self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
+    end
 end
 
 function Enemy:beginContact(a, b, collision)
@@ -70,7 +81,10 @@ end
 
 function Enemy:draw()
     love.graphics.setColor(1, 0.5, 0.7)
-    love.graphics.circle("fill", self.x, self.y, self.size)
+    love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
+    love.graphics.print(angle, self.body:getX(), self.body:getY()+ 70)
+    love.graphics.print(self.body:getX(),self.body:getX(), self.body:getY()+ 100)
+    love.graphics.print(self.body:getY(),self.body:getX(), self.body:getY()+ 110)
 end
 
 return Enemy
