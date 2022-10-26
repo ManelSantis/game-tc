@@ -80,7 +80,7 @@ function Enemy:endContact(a, b, collision)
 end
 
 function Enemy:draw()
-    love.graphics.setColor(1, 0.5, 0.7)
+    love.graphics.setColor(1, 1, 1)
     love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
     love.graphics.print(angle, self.body:getX(), self.body:getY()+ 70)
     love.graphics.print(self.body:getX(),self.body:getX(), self.body:getY()+ 100)
