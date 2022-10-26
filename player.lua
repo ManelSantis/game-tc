@@ -1,58 +1,64 @@
-local love = require "love"
+local Player = {}
 
-function Player(limit_x, limit_y, _world, _size, speedX, speedY)
+function Player:load(limit_x, limit_y, _size, speedX, speedY)
+    self.x = limit_x / 2
+    self.y = limit_y / 2
+    self.lx = limit_x
+    self.ly = limit_y
+    self.size = _size
+    self.velX = speedX
+    self.velY = speedY
 
-    return {
-        x = limit_x / 2,
-        y = limit_y / 2,
-        lx = limit_x,
-        ly = limit_y,
-        size = _size,
-        world = _world,
-        body,
-        shape,
-        fixture,
-        createPlayer = function (self)
-            self.body = love.physics.newBody (self.world, self.x, self.y, "dynamic")
-            self.shape = love.physics.newCircleShape(self.size)
-            self.fixture = love.physics.newFixture(self.body, self.shape, 1)
-            return self.body, self.shape, self.fixture            
-        end,
-        movePlayer = function (self, dt)
-            if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
-                if self.x < (self.lx - self.size) then
-                    self.x = self.x + speedX * dt
-                    self.body:setX(self.x)
-                end
-            end
+    self.body = love.physics.newBody (World, self.x, self.y, "dynamic")
+    self.shape = love.physics.newCircleShape(self.size)
+    self.fixture = love.physics.newFixture(self.body, self.shape, 1)
 
-            if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
-                if self.x > (0 + self.size) then
-                    self.x = self.x - speedX * dt
-                end
-            end
+    self.type = "player"
+end
 
-            if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
-                if self.y < (self.ly - self.size) then
-                    self.y = self.y + speedY * dt
-                end
-            end
+function Player:update(dt)
+    self:move(dt)
+end
 
-            if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
-                if self.y > (0 + self.size) then
-                    self.y = self.y - speedY * dt
-                end
-            end   
-            
-            self.body:setX(self.x)
-            self.body:setY(self.y)
-
-        end,
-        color = function (self)
-            love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
+function Player:move(dt)
+    if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
+        if self.x < (self.lx - self.size - 10) then
+            self.x = self.x + self.velX * dt
         end
+    end
 
-    }
+    if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
+        if self.x > (0 + self.size + 10) then
+            self.x = self.x - self.velX * dt
+        end
+    end
+
+    if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
+        if self.y < (self.ly - self.size - 10) then
+            self.y = self.y + self.velY * dt
+        end
+    end
+
+    if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
+        if self.y > (0 + self.size + 10) then
+            self.y = self.y - self.velY * dt
+        end
+    end   
+
+    self.body:setPosition(self.x, self.y)
+end
+
+function Player:beginContact(a, b, collision)
+
+end
+
+function Player:endContact(a, b, collision)
+
+end
+
+function Player:draw()
+    love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
+    love.graphics.circle("fill", self.x, self.y, self.size)
 
 end
 
