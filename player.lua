@@ -6,6 +6,7 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.lx = limit_x
     self.ly = limit_y
     self.size = _size
+    _G.P_size = _size
     self.velX = speedX
     self.velY = speedY
 

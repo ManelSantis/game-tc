@@ -34,10 +34,6 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     table.insert(Bullets, instance)
 end
 
-function Bullet:distance(mouseX, mouseY, bx, by)
-    return math.sqrt((bx - mouseX) ^ 2 + (by - mouseY) ^ 2)
-end
-
 function Bullet:update(dt)
     self:moveBullet(dt)
 end

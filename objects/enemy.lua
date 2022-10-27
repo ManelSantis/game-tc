@@ -15,7 +15,7 @@ function Enemy:load(_level, _size)
     SPRITE_WIDTH, SPRITE_HEIGH = 264, 94
     QUAD_WIDTH = 66
     QUAD_HEIGH = SPRITE_HEIGH
-
+    self.touthPLayer = false;
     
    
 
@@ -116,10 +116,16 @@ function Enemy:move(dt, player_x, player_y)
     local dx = player_x - self.body:getX()
     local dy = player_y - self.body:getY()
 
-    self.x = self.x + dx / distance * 50 * dt
-    self.y = self.y + dy / distance * 50 * dt
+    if distance > P_size + self.size then
+        self.x = self.x + dx / distance * 100 * dt
+        self.y = self.y + dy / distance * 100 * dt
+        self.body:setPosition(self.x, self.y)
+    else
+        self.x = self.x - dx / distance * 100 * dt
+        self.y = self.y - dy / distance * 100 * dt
+        self.body:setPosition(self.x, self.y)
+    end
 
-    self.body:setPosition(self.x, self.y)
 
     --self.y = self.body:getY()
     --self.x = self.body:getX()
@@ -160,7 +166,7 @@ function DistanceFrom(x1, y1, x2, y2)
 end
 
 function Enemy:endContact(a, b, collision)
-
+    
 end
 
 function Enemy:draw()
@@ -169,7 +175,7 @@ function Enemy:draw()
     love.graphics.print(self.body:getX(),self.body:getX(), self.body:getY()+ 100)
     love.graphics.print(self.body:getY(),self.body:getX(), self.body:getY()+ 110)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
+    --love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
     --love.graphics.scale(1)
     if self.animation.direction == "right" then
         love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
