@@ -76,6 +76,8 @@ function love.draw()
     Player:draw()
     Enemy.drawAll()
     cam:detach()
+    love.graphics.setColor(1, 1, 1)
+
 
    --[[ Camera:apply()
     Player:draw()

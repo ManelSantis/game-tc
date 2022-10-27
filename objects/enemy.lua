@@ -73,59 +73,7 @@ function Enemy.updateAll(dt, player_x, player_y)
 end
 
 function Enemy:move(dt, player_x, player_y, i)
-    --[[
-    if player_x - self.x > 0 then
-        self.x = self.x + self.level
-    elseif player_x - self.x < 0 then
-        self.x = self.x - self.level
-    end
- 
-    if player_y - self.y > 0 then
-        self.y = self.y + self.level
-    elseif player_y - self.y < 0 then
-        self.y = self.y - self.level
-    end
-    --self.body:setY(self.y)
-    --self.body:setX(self.x)
-    local angle = math.deg(math.atan2(self.body:getY() - player_y, self.body:getX() - player_x))
 
-    if angle > 0 then
-        angle =  -(angle - 180)
-    else
-        angle  = (-angle) + 180
-    end
-
-    local dx = math.cos(angle)
-    local dy = math.sin(angle)
-
-    if angle >=0 and angle <=90 then
-        dx = 200 * dt
-        dy = -200 * dt
-    end
-
-    if angle <= 360 and angle >= 270 then
-        dx = 200 * dt
-        dy = 200 * dt
-    end 
-
-    if angle <=270 and angle >=180 then
-        dx = -200 * dt
-        dy = -200 * dt
-    end
-
-    if angle <=180 and angle >=90 then
-        dx = -200 * dt
-        dy = 200 * dt
-    end
-
-
-    --[[if angle > 0 then
-        angle =  -(angle - 180)
-        self.body:applyForce(-math.cos(angle), math.sin(angle))
-    else
-        angle  = (-angle) + 180 
-        self.body:applyForce(-math.cos(angle), math.sin(angle))
-    end]]
 
     local distance = self:distance(player_x, player_y)
 
