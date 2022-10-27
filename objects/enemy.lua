@@ -116,14 +116,14 @@ function Enemy:move(dt, player_x, player_y)
     local dx = player_x - self.body:getX()
     local dy = player_y - self.body:getY()
 
-    self.x = self.x + dx / distance * 50 * dt
-    self.y = self.y + dy / distance * 50 * dt
+    --self.x = self.x + dx / distance * 50 * dt
+    --self.y = self.y + dy / distance * 50 * dt
 
-    self.body:setPosition(self.x, self.y)
+    --self.body:setPosition(self.x, self.y)
 
-    --self.y = self.body:getY()
-    --self.x = self.body:getX()
-    --self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
+    self.y = self.body:getY()
+    self.x = self.body:getX()
+    self.body:applyForce(dx,dy)
     if dx < 0  then
         self.animation.idle = false
         self.animation.direction = "left"
