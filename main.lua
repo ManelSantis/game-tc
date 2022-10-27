@@ -8,21 +8,25 @@ local atirar = true
 
 function love.load()
     _G.cam = camera()
-    World = love.physics.newWorld(0, 0) 
+    World = love.physics.newWorld(0, 0)
 
     _G.background = love.graphics.newImage("img/background.png")
     
     Player:load(background:getWidth(), background:getHeight(), 30, 250, 250)
     
-    Enemy:load(1, 20)
+    Enemy:load()
     Bullet:load()
+    Enemy:addEnemy(1, 20)
+    Enemy:addEnemy(2, 20)
+    Enemy:addEnemy(3, 20)
+
 end
 
 function love.update(dt)
     World:update(dt)
     Player:update(dt)
     cam:lookAt(Player.x, Player.y) 
-    Enemy:update(dt, Player.body:getX(), Player.body:getY())
+    Enemy.updateAll(dt, Player.body:getX(), Player.body:getY())
     Bullet.updateAll(dt)
     VerifyCam()
     Shooting()
@@ -70,7 +74,7 @@ function love.draw()
     end
     Bullet.drawAll()
     Player:draw()
-    Enemy:draw()
+    Enemy.drawAll()
     cam:detach()
 
    --[[ Camera:apply()

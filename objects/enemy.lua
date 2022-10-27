@@ -1,10 +1,17 @@
 local Enemy = {}
+local Enemies = {}
 
-function Enemy:load(_level, _size)
+Enemy.__index = Enemy
+
+function Enemy:load()    
+end
+
+function Enemy:addEnemy(_level, _size)
+    local instance = setmetatable({}, Enemy)
     local dice = math.random(1, 4)
     local _x, _y
-    self.sprite = love.graphics.newImage("img/alien_bigger.png")
-    self.animation = {
+    instance.sprite = love.graphics.newImage("img/alien_bigger.png")
+    instance.animation = {
             direction = "right",
             idle = false,
             frame = 1,
@@ -15,9 +22,7 @@ function Enemy:load(_level, _size)
     SPRITE_WIDTH, SPRITE_HEIGH = 264, 94
     QUAD_WIDTH = 66
     QUAD_HEIGH = SPRITE_HEIGH
-    self.touthPLayer = false;
-    
-   
+    instance.touthPLayer = false;
 
     if dice == 1 then --Enemy come from above
         _x = math.random(_size, love.graphics.getWidth())
@@ -33,26 +38,33 @@ function Enemy:load(_level, _size)
         _y = math.random(_size, love.graphics.getHeight())
     end
 
-    self.x = _x
-    self.y = _y
-    self.level = _level
-    self.size = 30
+    instance.x = _x
+    instance.y = _y
+    instance.level = _level
+    instance.size = 30
 
-    self.body = love.physics.newBody (World, self.x, self.y, "dynamic")
-    self.body:setMass(10)
-    self.shape = love.physics.newCircleShape(self.size)
-    self.fixture = love.physics.newFixture(self.body, self.shape, 1)
+    instance.body = love.physics.newBody (World, instance.x, instance.y, "dynamic")
+    instance.body:setMass(10)
+    instance.shape = love.physics.newCircleShape(instance.size)
+    instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
            
-    self.type = "enemy"
-    self.quads = {}
+    instance.type = "enemy"
+    instance.quads = {}
+
+    table.insert(Enemies, instance)
 end
 
 function Enemy:update(dt, player_x, player_y)
     self:move(dt, player_x, player_y)
-
     
     for i = 1, self.animation.max_frames do
        self.quads[i] = love.graphics.newQuad(QUAD_WIDTH * (i-1),0,QUAD_WIDTH,QUAD_HEIGH,SPRITE_WIDTH,SPRITE_HEIGH)
+    end
+end
+
+function Enemy.updateAll(dt, player_x, player_y)
+    for i, instance in ipairs(Enemies) do
+        instance:update(dt, player_x, player_y)
     end
 end
 
@@ -167,6 +179,12 @@ end
 
 function Enemy:endContact(a, b, collision)
     
+end
+
+function Enemy.drawAll()
+    for i,instance in ipairs(Enemies) do
+        instance:draw()
+    end
 end
 
 function Enemy:draw()
