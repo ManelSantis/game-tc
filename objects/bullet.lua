@@ -9,9 +9,9 @@ end
 
 function Bullet:addBullet(mouseX, mouseY, initX, initY)
     local instance = setmetatable({}, Bullet)
-    instance.speed = 200
+    instance.speed = 250
 
-    local w = initX
+    --[[local w = initX
     local h = initY
     
     local deltaX = mouseX - w 
@@ -21,7 +21,10 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     instance.o_angle = -math.deg(instance.o_angle)
 
     instance.dx = instance.speed * math.cos(instance.o_angle)
-    instance.dy = instance.speed * math.sin(instance.o_angle)
+    instance.dy = instance.speed * math.sin(instance.o_angle)]]
+    
+    instance.mouseX = mouseX
+    instance.mouseY = mouseY
     instance.x = initX
     instance.y = initY
     instance.onScreen = true
@@ -32,6 +35,10 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
 
     table.insert(Bullets, instance)
+end
+
+function Bullet:distance(mouseX, mouseY, bx, by)
+    return math.sqrt((bx - mouseX) ^ 2 + (by - mouseY) ^ 2)
 end
 
 function Bullet:update(dt)
@@ -46,10 +53,16 @@ function Bullet.updateAll(dt)
 end
 
 function Bullet:moveBullet(dt)
-    self.x = self.x + (self.dx * dt)
-    self.y = self.y + (self.dy * dt)
-    self.body:setX(self.x)
-    self.body:setY(self.y)
+
+    local dx = self.mouseX - self.x
+    local dy = self.mouseY - self.y
+    
+    local d = self:distance(self.mouseX, self.mouseY, self.x, self.y)
+    self.x = self.x + dx / d * self.speed * dt
+    self.y = self.y + dy / d * self.speed * dt
+    self.body:setPosition(self.x, self.y)
+
+    
 end
 
 function Bullet.drawAll()
