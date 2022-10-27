@@ -78,7 +78,6 @@ function love.draw()
     cam:detach()
     love.graphics.setColor(1, 1, 1)
 
-
    --[[ Camera:apply()
     Player:draw()
     Camera:clear()]]
