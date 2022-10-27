@@ -48,27 +48,65 @@ function Enemy:move(dt, player_x, player_y)
     elseif player_y - self.y < 0 then
         self.y = self.y - self.level
     end
-    
-    ]]
     --self.body:setY(self.y)
     --self.body:setX(self.x)
-    _G.angle = math.deg( math.atan2(self.body:getY() - player_y, self.body:getX() - player_x))
+    local angle = math.deg(math.atan2(self.body:getY() - player_y, self.body:getX() - player_x))
+
     if angle > 0 then
         angle =  -(angle - 180)
-        self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
+    else
+        angle  = (-angle) + 180
+    end
+
+    local dx = math.cos(angle)
+    local dy = math.sin(angle)
+
+    if angle >=0 and angle <=90 then
+        dx = 200 * dt
+        dy = -200 * dt
+    end
+
+    if angle <= 360 and angle >= 270 then
+        dx = 200 * dt
+        dy = 200 * dt
+    end 
+
+    if angle <=270 and angle >=180 then
+        dx = -200 * dt
+        dy = -200 * dt
+    end
+
+    if angle <=180 and angle >=90 then
+        dx = -200 * dt
+        dy = 200 * dt
+    end
+
+
+    --[[if angle > 0 then
+        angle =  -(angle - 180)
+        self.body:applyForce(-math.cos(angle), math.sin(angle))
     else
         angle  = (-angle) + 180 
-        self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
-    end
+        self.body:applyForce(-math.cos(angle), math.sin(angle))
+    end]]
+
+    local distance = self:distance(player_x, player_y)
+
+    local dx = player_x - self.body:getX()
+    local dy = player_y - self.body:getY()
+
+    self.x = self.x + dx / distance * 200 * dt
+    self.y = self.y + dy / distance * 200 * dt
+
+    self.body:setPosition(self.x, self.y)
 end
 
 function Enemy:beginContact(a, b, collision)
 
 end
 
-function Enemy:checkTouched (player_x, player_y, cursor_radius) -- collision detection with the player
-    -- below will detect if the enemy is anywhere near the player
-    return math.sqrt((self.x - player_x) ^ 2 + (self.y - player_y) ^ 2) <= cursor_radius * 2
+function Enemy:distance (player_x, player_y)
+    return math.sqrt((self.x - player_x) ^ 2 + (self.y - player_y) ^ 2)
 end
 
 function DistanceFrom(x1, y1, x2, y2)
@@ -82,9 +120,9 @@ end
 function Enemy:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
-    love.graphics.print(angle, self.body:getX(), self.body:getY()+ 70)
-    love.graphics.print(self.body:getX(),self.body:getX(), self.body:getY()+ 100)
-    love.graphics.print(self.body:getY(),self.body:getX(), self.body:getY()+ 110)
+    --[[love.graphics.print(ANGLE, self.body:getX(), self.body:getY()+ 70)
+    love.graphics.print(DX, self.body:getX(), self.body:getY()+ 100)
+    love.graphics.print(DY, self.body:getX(), self.body:getY()+ 120)]]
 end
 
 return Enemy
