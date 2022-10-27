@@ -10,7 +10,7 @@ function love.load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0) 
 
-    _G.background = love.graphics.newImage("img/jammy-jellyfish-wallpaper.jpg")
+    _G.background = love.graphics.newImage("img/background.png")
     
     Player:load(background:getWidth(), background:getHeight(), 30, 250, 250)
     
