@@ -3,7 +3,7 @@ local Enemy = {}
 function Enemy:load(_level, _size)
     local dice = math.random(1, 4)
     local _x, _y
-    self.sprite = love.graphics.newImage("img/alien.png")
+    self.sprite = love.graphics.newImage("img/alien_bigger.png")
     self.animation = {
             direction = "right",
             idle = false,
@@ -12,8 +12,8 @@ function Enemy:load(_level, _size)
             speed = 20,
             timer = 0.3
     }
-    SPRITE_WIDTH, SPRITE_HEIGH = 126, 47
-    QUAD_WIDTH = 33
+    SPRITE_WIDTH, SPRITE_HEIGH = 264, 94
+    QUAD_WIDTH = 66
     QUAD_HEIGH = SPRITE_HEIGH
 
     
@@ -36,7 +36,7 @@ function Enemy:load(_level, _size)
     self.x = _x
     self.y = _y
     self.level = _level
-    self.size = _size
+    self.size = 30
 
     self.body = love.physics.newBody (World, self.x, self.y, "dynamic")
     self.body:setMass(10)
@@ -69,21 +69,62 @@ function Enemy:move(dt, player_x, player_y)
     elseif player_y - self.y < 0 then
         self.y = self.y - self.level
     end
-    
-    ]]
     --self.body:setY(self.y)
     --self.body:setX(self.x)
-    _G.angle = math.deg( math.atan2(self.body:getY() - player_y, self.body:getX() - player_x))
+    local angle = math.deg(math.atan2(self.body:getY() - player_y, self.body:getX() - player_x))
+
     if angle > 0 then
         angle =  -(angle - 180)
-        --self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
+    else
+        angle  = (-angle) + 180
+    end
+
+    local dx = math.cos(angle)
+    local dy = math.sin(angle)
+
+    if angle >=0 and angle <=90 then
+        dx = 200 * dt
+        dy = -200 * dt
+    end
+
+    if angle <= 360 and angle >= 270 then
+        dx = 200 * dt
+        dy = 200 * dt
+    end 
+
+    if angle <=270 and angle >=180 then
+        dx = -200 * dt
+        dy = -200 * dt
+    end
+
+    if angle <=180 and angle >=90 then
+        dx = -200 * dt
+        dy = 200 * dt
+    end
+
+
+    --[[if angle > 0 then
+        angle =  -(angle - 180)
+        self.body:applyForce(-math.cos(angle), math.sin(angle))
     else
         angle  = (-angle) + 180 
-    end
-    self.y = self.body:getY()
-    self.x = self.body:getX()
-    self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
-    if math.cos(angle) > 180 then
+        self.body:applyForce(-math.cos(angle), math.sin(angle))
+    end]]
+
+    local distance = self:distance(player_x, player_y)
+
+    local dx = player_x - self.body:getX()
+    local dy = player_y - self.body:getY()
+
+    self.x = self.x + dx / distance * 50 * dt
+    self.y = self.y + dy / distance * 50 * dt
+
+    self.body:setPosition(self.x, self.y)
+
+    --self.y = self.body:getY()
+    --self.x = self.body:getX()
+    --self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
+    if dx < 0  then
         self.animation.idle = false
         self.animation.direction = "left"
     else
@@ -98,25 +139,20 @@ function Enemy:move(dt, player_x, player_y)
 
             self.animation.frame = self.animation.frame + 1
 
-            if self.animation.direction=="right" then
-                self.x = self.x + self.animation.speed
-            elseif self.animation.direction=="left" then
-                self.x = self.x - self.animation.speed
-            end
-            if(self.animation.frame > self.animation.max_frames) then
+              if(self.animation.frame > self.animation.max_frames) then
                 self.animation.frame = 1
             end
         end
     end
+
 end
 
 function Enemy:beginContact(a, b, collision)
 
 end
 
-function Enemy:checkTouched (player_x, player_y, cursor_radius) -- collision detection with the player
-    -- below will detect if the enemy is anywhere near the player
-    return math.sqrt((self.x - player_x) ^ 2 + (self.y - player_y) ^ 2) <= cursor_radius * 2
+function Enemy:distance (player_x, player_y)
+    return math.sqrt((self.x - player_x) ^ 2 + (self.y - player_y) ^ 2)
 end
 
 function DistanceFrom(x1, y1, x2, y2)
@@ -129,16 +165,16 @@ end
 
 function Enemy:draw()
 
-    love.graphics.print(angle, self.body:getX(), self.body:getY()+ 70)
+    --love.graphics.print(angle, self.body:getX(), self.body:getY()+ 70)
     love.graphics.print(self.body:getX(),self.body:getX(), self.body:getY()+ 100)
     love.graphics.print(self.body:getY(),self.body:getX(), self.body:getY()+ 110)
     love.graphics.setColor(1, 1, 1)
-    --love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
-    love.graphics.scale(1)
+    love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
+    --love.graphics.scale(1)
     if self.animation.direction == "right" then
-        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX(),self.body:getY())
+        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
     else
-        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX(),self.body:getY(),0,-1,1,QUAD_WIDTH,0)
+        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
     end
     
    
