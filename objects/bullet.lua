@@ -9,19 +9,16 @@ end
 
 function Bullet:addBullet(mouseX, mouseY, initX, initY)
     local instance = setmetatable({}, Bullet)
-    instance.speed = 250
-
-    --[[local w = initX
-    local h = initY
+    instance.speed = 300
     
-    local deltaX = mouseX - w 
-    local deltaY = mouseY - h 
+    local deltaX = initX - mouseX
+    local deltaY = initY - mouseY
    
     instance.o_angle = math.atan2(deltaY, deltaX)
-    instance.o_angle = -math.deg(instance.o_angle)
+    --instance.o_angle = math.deg(instance.o_angle)
 
-    instance.dx = instance.speed * math.cos(instance.o_angle)
-    instance.dy = instance.speed * math.sin(instance.o_angle)]]
+    instance.dx = -math.cos(instance.o_angle)
+    instance.dy = -math.sin(instance.o_angle)
     
     instance.mouseX = mouseX
     instance.mouseY = mouseY
@@ -54,13 +51,13 @@ end
 
 function Bullet:moveBullet(dt)
 
-    local dx = self.mouseX - self.x
-    local dy = self.mouseY - self.y
+    --local dx = self.mouseX - self.x
+    --local dy = self.mouseY - self.y
     
-    local d = self:distance(self.mouseX, self.mouseY, self.x, self.y)
-    self.x = self.x + dx / d * self.speed * dt
-    self.y = self.y + dy / d * self.speed * dt
-    self.body:setPosition(self.x, self.y)
+    --local d = self:distance(self.mouseX, self.mouseY, self.x, self.y)
+    self.x = self.x + self.dx * self.speed * dt
+    self.y = self.y + self.dy * self.speed * dt
+    self.body:applyForce(self.x, self.y)
 
     
 end
