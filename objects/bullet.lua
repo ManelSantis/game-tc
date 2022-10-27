@@ -1,10 +1,13 @@
+local Enemy = require("objects/enemy")
+
 local Bullet = {}
 local Bullets =  {}
 
 Bullet.__index = Bullet
 
-function Bullet:load()
-    
+function Bullet:load(limit_x, limit_y)
+    _G.LimitX = limit_x
+    _G.LimitY = limit_y
 end
 
 function Bullet:addBullet(mouseX, mouseY, initX, initY)
@@ -34,18 +37,18 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     table.insert(Bullets, instance)
 end
 
-function Bullet:update(dt)
-    self:moveBullet(dt)
+function Bullet:update(dt, i, enemies)
+    self:moveBullet(dt, i, enemies)
 end
 
 
-function Bullet.updateAll(dt)
+function Bullet.updateAll(dt, enemies)
     for i,instance in ipairs(Bullets) do
-        instance:update(dt)
+        instance:update(dt, i, enemies)
     end
 end
 
-function Bullet:moveBullet(dt)
+function Bullet:moveBullet(dt, i, enemies)
 
     --local dx = self.mouseX - self.x
     --local dy = self.mouseY - self.y
@@ -55,7 +58,39 @@ function Bullet:moveBullet(dt)
     self.y = self.y + self.dy * self.speed * dt
     self.body:applyForce(self.x, self.y)
 
-    
+    if self.x >= LimitX or self.x <= 0 then
+        self.onScreen = false
+    end
+
+    if self.y >= LimitY or self.y <= 0 then
+        self.onScreen = false
+    end
+
+    self:touchEnemies(enemies)
+
+    self:removeBullet(i, self.onScreen)
+
+end
+
+function Bullet:touchEnemies(enemies)
+    for i, instance in ipairs(enemies) do
+        local distance = self:distance(instance.body:getX(), instance.body:getY())
+        if distance < instance.size + instance.size then
+            self.onScreen = false
+            instance.onScreen = false
+        end
+    end
+end
+
+function Bullet:distance (x, y)
+    return math.sqrt((self.x - x) ^ 2 + (self.y - y) ^ 2)
+end
+
+
+function Bullet:removeBullet(index, onScreen)
+    if onScreen == false then
+        table.remove(Bullets, index)
+    end
 end
 
 function Bullet.drawAll()

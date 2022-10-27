@@ -50,25 +50,29 @@ function Enemy:addEnemy(_level, _size)
            
     instance.type = "enemy"
     instance.quads = {}
+    instance.onScreen = true
 
     table.insert(Enemies, instance)
 end
 
-function Enemy:update(dt, player_x, player_y)
-    self:move(dt, player_x, player_y)
+function Enemy:update(dt, player_x, player_y, j)
+    self:move(dt, player_x, player_y, j)
     
     for i = 1, self.animation.max_frames do
        self.quads[i] = love.graphics.newQuad(QUAD_WIDTH * (i-1),0,QUAD_WIDTH,QUAD_HEIGH,SPRITE_WIDTH,SPRITE_HEIGH)
     end
+
+    self:removeEnemy(j, self.onScreen)
+
 end
 
 function Enemy.updateAll(dt, player_x, player_y)
     for i, instance in ipairs(Enemies) do
-        instance:update(dt, player_x, player_y)
+        instance:update(dt, player_x, player_y, i)
     end
 end
 
-function Enemy:move(dt, player_x, player_y)
+function Enemy:move(dt, player_x, player_y, i)
     --[[
     if player_x - self.x > 0 then
         self.x = self.x + self.level
@@ -165,8 +169,14 @@ function Enemy:move(dt, player_x, player_y)
 
 end
 
-function Enemy:beginContact(a, b, collision)
+function Enemy:removeEnemy(index, onScreen)
+    if onScreen == false then
+        table.remove(Enemies, index)
+    end
+end
 
+function Enemy:activeEnemies()
+    return Enemies
 end
 
 function Enemy:distance (player_x, player_y)
@@ -175,10 +185,6 @@ end
 
 function DistanceFrom(x1, y1, x2, y2)
     return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2) 
-end
-
-function Enemy:endContact(a, b, collision)
-    
 end
 
 function Enemy.drawAll()
