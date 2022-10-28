@@ -78,9 +78,23 @@ function Bullet:touchEnemies(enemies)
         if distance < instance.size + instance.size then
             self.onScreen = false
             instance.onScreen = false
+            return
         end
     end
 end
+
+function Bullet.beginContact(a, b, collision)
+    for i,instance in ipairs(Bullets) do
+        for i, enemies in ipairs (Enemy:activeEnemies()) do
+            if a == instance.fixture or b == instance.fixture then
+                if a == enemies.fixture or b == enemies.fixture then
+                   enemies.onScreen = false
+                   instance.onScreen = false
+                end
+             end
+        end
+    end
+ end
 
 function Bullet:distance (x, y)
     return math.sqrt((self.x - x) ^ 2 + (self.y - y) ^ 2)

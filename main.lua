@@ -9,6 +9,7 @@ local atirar = true
 function love.load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
+    World:setCallbacks(beginContact, endContact)
 
     _G.background = love.graphics.newImage("img/background.png")
     
@@ -63,6 +64,10 @@ function Shooting()
     elseif not love.mouse.isDown(1) then
         atirar = true
     end
+end
+
+function beginContact(a, b, collision)
+	---Bullet.beginContact(a, b, collision)
 end
 
 function love.draw()
