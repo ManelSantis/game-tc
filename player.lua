@@ -15,10 +15,43 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.fixture = love.physics.newFixture(self.body, self.shape, 1)
 
     self.type = "player"
+
+    self.sprite = love.graphics.newImage("img/boneco_tile.png")
+    self.animation = {
+            direction = "right",
+            idle = false,
+            frame = 1,
+            max_frames = 4,
+            speed = 20,
+            timer = 0.5
+    }
+    SPRITE_WIDTH, SPRITE_HEIGH = 260, 260
+    QUAD_WIDTH = 60
+    QUAD_HEIGH = SPRITE_HEIGH/2
+
+    self.quads = {}
+    for i = 1, self.animation.max_frames do
+        self.quads[i] = love.graphics.newQuad(QUAD_WIDTH * (i-1),0,QUAD_WIDTH,QUAD_HEIGH,SPRITE_WIDTH,SPRITE_HEIGH)
+    end
 end
 
 function Player:update(dt)
     self:move(dt)
+    
+
+    if not self.animation.idle then
+        self.animation.timer = self.animation.timer + dt
+
+        if self.animation.timer > 0.2 then
+            self.animation.timer = 0.1
+
+            self.animation.frame = self.animation.frame + 1
+
+              if(self.animation.frame > self.animation.max_frames) then
+                self.animation.frame = 1
+            end
+        end
+    end
 end
 
 function Player:move(dt)
@@ -26,12 +59,16 @@ function Player:move(dt)
         if self.x < (self.lx - self.size - 10) then
             self.x = self.x + self.velX * dt
         end
+        self.animation.idle = false
+        self.animation.direction = "right"
     end
 
     if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
         if self.x > (0 + self.size + 10) then
             self.x = self.x - self.velX * dt
         end
+        self.animation.idle = false
+        self.animation.direction = "left"
     end
 
     if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
@@ -58,9 +95,13 @@ function Player:endContact(a, b, collision)
 end
 
 function Player:draw()
-    love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
+    --love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
     love.graphics.circle("fill", self.x, self.y, self.size)
-
+    if self.animation.direction == "right" then
+        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
+    else
+        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+    end
 end
 
 return Player
