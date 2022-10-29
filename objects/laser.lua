@@ -62,8 +62,8 @@ function Laser:pointsBetween()
     local x, y
     local quant = 1000
         for i=1, quant do
-            x = math.abs(diffX / quant) * i + self.dx
-            y = math.abs(diffY / quant) * i + self.dy
+            x = math.abs(diffX) / quant * i + self.dx
+            y = math.abs(diffY) / quant * i + self.dy
             table.insert(tableX, x)
             table.insert(tableY, y)
         end
@@ -90,7 +90,9 @@ function Laser:touchEnemies(enemies)
 end
 
 function Laser:distance (x1, y1, x2, y2, rad)
-    return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2) <= rad
+    local deltaX = x1 - x2
+    local deltaY = y1 - y2
+    return math.sqrt(math.abs(deltaX) ^ 2 + math.abs(deltaY) ^ 2) <= rad
 end
 
 function Laser:removeLaser(index, onScreen)

@@ -80,7 +80,7 @@ function Player:move(dt)
     if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
         if self.body:getX() < (self.lx - self.size - 10) then
             --self.x = self.x + self.velX * dt
-            self.body:applyForce(self.velX,0)
+            self.body:applyForce(self.velX, 0)
         end
         self.animation.idle = false
         self.animation.direction = "right"
@@ -118,14 +118,6 @@ function Player:move(dt)
     self.animation.idle = true
     self.x,self.y =  self.body:getX(),self.body:getY()
     --self.body:setPosition(self.x, self.y)
-end
-
-function Player:beginContact(a, b, collision)
-
-end
-
-function Player:endContact(a, b, collision)
-
 end
 
 function Player:draw()

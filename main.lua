@@ -27,7 +27,7 @@ function love.load()
     Enemy:addEnemy(1, 20)
     Enemy:addEnemy(2, 20)
     Enemy:addEnemy(3, 20)
-
+    Enemy:addEnemy(4, 20)
 end
 
 function love.update(dt)
