@@ -101,7 +101,7 @@ function Bullet.drawAll()
 end
 
 function Bullet:draw()
-    love.graphics.setColor(1, 0, 0)
+    love.graphics.setColor(1, 1, 1)
     love.graphics.circle("line", self.x, self.y, self.size)
 end
 

@@ -16,7 +16,8 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
 
     self.type = "player"
 
-    self.sprite = love.graphics.newImage("img/boneco_tile.png")
+    self.sprite = love.graphics.newImage("img/char_idle.png")
+    self.sprite_Walk = love.graphics.newImage("img/walk.png")
     self.animation = {
             direction = "right",
             idle = false,
@@ -25,9 +26,9 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
             speed = 20,
             timer = 0.5
     }
-    SPRITE_WIDTH, SPRITE_HEIGH = 260, 260
+    SPRITE_WIDTH, SPRITE_HEIGH = 240, 120
     QUAD_WIDTH = 60
-    QUAD_HEIGH = SPRITE_HEIGH/2
+    QUAD_HEIGH = SPRITE_HEIGH
 
     self.quads = {}
     for i = 1, self.animation.max_frames do
@@ -36,6 +37,9 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
 
     self.gun = love.graphics.newImage("img/gun.png")
     self.gunAngle = 0
+
+    self.jetSound = love.audio.newSource("audio/376694__daleonfire__laser.wav","stream")
+    self.jetSound:setVolume(1.4)
 end
 
 function Player:update(dt)
@@ -57,7 +61,7 @@ function Player:update(dt)
     if self.animation.direction == "left" then
         self.gunAngle =  self.gunAngle  
     end
-    if not self.animation.idle then
+    --if not self.animation.idle then
         self.animation.timer = self.animation.timer + dt
 
         if self.animation.timer > 0.2 then
@@ -69,39 +73,51 @@ function Player:update(dt)
                 self.animation.frame = 1
             end
         end
-    end
+    --end
 end
 
 function Player:move(dt)
     if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
-        if self.x < (self.lx - self.size - 10) then
-            self.x = self.x + self.velX * dt
+        if self.body:getX() < (self.lx - self.size - 10) then
+            --self.x = self.x + self.velX * dt
+            self.body:applyForce(self.velX,0)
         end
         self.animation.idle = false
         self.animation.direction = "right"
+        self.jetSound:play()
     end
 
     if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
-        if self.x > (0 + self.size + 10) then
-            self.x = self.x - self.velX * dt
+        if self.body:getX() > (0 + self.size + 10) then
+            --self.x = self.x - self.velX * dt
+            self.body:applyForce(-self.velX,0)
         end
         self.animation.idle = false
         self.animation.direction = "left"
+        self.jetSound:play()
     end
 
     if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
-        if self.y < (self.ly - self.size - 10) then
-            self.y = self.y + self.velY * dt
+        if self.body:getY() < (self.ly - self.size - 10) then
+            --self.y = self.y + self.velY * dt
+            self.body:applyForce(0,self.velY)
         end
+        self.animation.idle = false
+        self.jetSound:play()
     end
 
     if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
-        if self.y > (0 + self.size + 10) then
-            self.y = self.y - self.velY * dt
+        if self.body:getY() > (0 + self.size + 10) then
+            --self.y = self.y - self.velY * dt
+            self.body:applyForce(0,-self.velY)
         end
+        self.animation.idle = false
+        self.jetSound:play()
     end   
-
-    self.body:setPosition(self.x, self.y)
+    self.jetSound:pause()
+    self.animation.idle = true
+    self.x,self.y =  self.body:getX(),self.body:getY()
+    --self.body:setPosition(self.x, self.y)
 end
 
 function Player:beginContact(a, b, collision)
@@ -114,11 +130,19 @@ end
 
 function Player:draw()
     --love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
-    love.graphics.circle("fill", self.x, self.y, self.size)
+    love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
     if self.animation.direction == "right" then
-        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
-    else
-        love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+        --if not self.animation.idle then
+            love.graphics.draw(self.sprite_Walk, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
+        --else
+        --    love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
+        --end
+    elseif self.animation.direction == "left" then
+        --if not self.animation.idle then
+            love.graphics.draw(self.sprite_Walk, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+        --else
+        --    love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+        --end
     end
 
     
