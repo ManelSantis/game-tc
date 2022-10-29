@@ -28,8 +28,8 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     
     instance.mouseX = mouseX
     instance.mouseY = mouseY
-    instance.x = initX
-    instance.y = initY
+    instance.x = initX + (90 * -math.cos(instance.o_angle))
+    instance.y = initY + (90 * -math.sin(instance.o_angle))
     instance.onScreen = true
     instance.size = 10
 

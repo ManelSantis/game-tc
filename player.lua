@@ -134,6 +134,9 @@ function Player:draw()
         love.graphics.draw(self.gun,self.body:getX() +5,self.body:getY() + 5,self.gunAngle,-1,1,15,5)
     end
     
+
+    love.graphics.circle("line", self.x, self.y, self.size * 3)
+
     
 
 end
