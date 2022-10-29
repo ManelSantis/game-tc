@@ -28,9 +28,7 @@ function Laser:addLaser(mouseX, mouseY, initX, initY)
 
     instance.dx = mouseX + (500 * -math.cos(instance.o_angle))
     instance.dy = mouseY + (500 * -math.sin(instance.o_angle))
-    
-    instance.mouseX = mouseX
-    instance.mouseY = mouseY
+
     instance.x = initX + (90 * -math.cos(instance.o_angle))
     instance.y = initY + (90 * -math.sin(instance.o_angle))
     instance.onScreen = true
@@ -56,6 +54,22 @@ function Laser:update(dt, i, enemies)
     self:removeLaser(i, self.onScreen)
 end
 
+function Laser:pointsBetween()
+    local tableX = {}
+    local tableY = {}
+    local diffX = self.x - self.dx
+    local diffY = self.y - self.dy
+    local x, y
+    local quant = 1000
+        for i=1, quant do
+            x = math.abs(diffX / quant) * i + self.dx
+            y = math.abs(diffY / quant) * i + self.dy
+            table.insert(tableX, x)
+            table.insert(tableY, y)
+        end
+    return tableX, tableY
+end
+
 function Laser.updateAll(dt, enemies)
     for i,instance in ipairs(Lasers) do
         instance:update(dt, i, enemies)
@@ -64,18 +78,19 @@ end
 
 function Laser:touchEnemies(enemies)
     for i, instance in ipairs(enemies) do
-        local help = self.body:isTouching(instance.body)
-        --local distance = self:distance(instance.body:getX(), instance.body:getY())
-        if help == true then
-            a = "entrou "
-            self.onScreen = false
-            instance.onScreen = false
+        local tableX, tableY = self:pointsBetween()
+        for j=1, #tableX do
+            local help = self:distance(tableX[j], tableY[j], instance.x, instance.y, instance.size)
+            if help == true then
+                self.onScreen = false
+                instance.onScreen = false
+            end
         end
     end
 end
 
-function Laser:distance (x, y)
-    return math.sqrt((self.x - x) ^ 2 + (self.y - y) ^ 2)
+function Laser:distance (x1, y1, x2, y2, rad)
+    return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2) <= rad
 end
 
 function Laser:removeLaser(index, onScreen)
@@ -91,11 +106,7 @@ function Laser.drawAll()
 end
 
 function Laser:draw()
-    love.graphics.setColor(1, 0, 0)
     love.graphics.line(self.x, self.y, self.dx, self.dy)
-    love.graphics.print("" .. a .. b .. c, 20, 20)
-
-
 end
 
 return Laser
