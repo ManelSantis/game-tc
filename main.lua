@@ -7,6 +7,7 @@ local Bullet = require("objects/bullet")
 local atirar = true
 
 local music
+local projectileSound
 function love.load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
@@ -15,7 +16,7 @@ function love.load()
     _G.background = love.graphics.newImage("img/background.png")
 
     music = love.audio.newSource("audio/Blast From The Past - Jeremy Black.mp3", "stream")
-    
+    projectileSound = love.audio.newSource("audio/376694__daleonfire__laser.wav","stream")
     Player:load(background:getWidth(), background:getHeight(), 30, 250, 250)
     
     Enemy:load()
@@ -70,6 +71,11 @@ function Shooting()
         local mouseX, mouseY = cam:mousePosition()
 
         Bullet:addBullet(mouseX, mouseY, Player.x, Player.y)
+        --projectileSound:stop()
+        --projectileSound:play()
+
+        local clone = projectileSound:clone()
+	    clone:play()
         atirar = false
     elseif not love.mouse.isDown(1) then
         atirar = true

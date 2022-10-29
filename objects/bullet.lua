@@ -9,13 +9,13 @@ function Bullet:load(limit_x, limit_y)
     _G.LimitX = limit_x
     _G.LimitY = limit_y
 
-    self.projectileSound =  love.audio.newSource("audio/376694__daleonfire__laser.wav","static")
+    
 
 end
 
 function Bullet:addBullet(mouseX, mouseY, initX, initY)
     local instance = setmetatable({}, Bullet)
-    instance.speed = 300
+    instance.speed = 700
     
     local deltaX = initX - mouseX
     local deltaY = initY - mouseY
@@ -31,14 +31,13 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     instance.x = initX + (90 * -math.cos(instance.o_angle))
     instance.y = initY + (90 * -math.sin(instance.o_angle))
     instance.onScreen = true
-    instance.size = 10
+    instance.size = 5
 
     instance.body = love.physics.newBody (World, instance.x, instance.y, "dynamic")
     instance.shape = love.physics.newCircleShape(instance.size)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
 
     table.insert(Bullets, instance)
-    self.projectileSound:play()
 end
 
 function Bullet:update(dt, i, enemies)
