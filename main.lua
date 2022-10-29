@@ -98,7 +98,7 @@ function love.draw()
     Enemy.drawAll()
     cam:detach()
     love.graphics.setColor(1, 1, 1)
-
+    love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
    --[[ Camera:apply()
     Player:draw()
     Camera:clear()]]
