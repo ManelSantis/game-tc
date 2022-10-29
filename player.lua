@@ -128,6 +128,9 @@ function Player:draw()
         love.graphics.draw(self.gun,self.body:getX(),self.body:getY() + 5,self.gunAngle,-1,1,25,10)
     end
     
+
+    love.graphics.circle("line", self.x, self.y, self.size * 3)
+
     
 
 end
