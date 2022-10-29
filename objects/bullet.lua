@@ -8,9 +8,6 @@ Bullet.__index = Bullet
 function Bullet:load(limit_x, limit_y)
     _G.LimitX = limit_x
     _G.LimitY = limit_y
-
-    
-
 end
 
 function Bullet:addBullet(mouseX, mouseY, initX, initY)
@@ -85,19 +82,6 @@ function Bullet:touchEnemies(enemies)
         end
     end
 end
-
-function Bullet.beginContact(a, b, collision)
-    for i,instance in ipairs(Bullets) do
-        for i, enemies in ipairs (Enemy:activeEnemies()) do
-            if a == instance.fixture or b == instance.fixture then
-                if a == enemies.fixture or b == enemies.fixture then
-                   enemies.onScreen = false
-                   instance.onScreen = false
-                end
-             end
-        end
-    end
- end
 
 function Bullet:distance (x, y)
     return math.sqrt((self.x - x) ^ 2 + (self.y - y) ^ 2)

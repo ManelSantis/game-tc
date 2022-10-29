@@ -4,6 +4,8 @@ _G.camera = require "libraries/camera"
 local Player = require("player")
 local Enemy = require("objects/enemy")
 local Bullet = require("objects/bullet")
+local Laser = require("objects/laser")
+
 local atirar = true
 
 local music
@@ -36,11 +38,14 @@ function love.update(dt)
     
     World:update(dt)
     Player:update(dt)
+    
     cam:lookAt(Player.x, Player.y) 
     Enemy.updateAll(dt, Player.body:getX(), Player.body:getY())
     Bullet.updateAll(dt, Enemy:activeEnemies())
+    Laser.updateAll(dt, Enemy:activeEnemies())
     VerifyCam()
-    Shooting()
+    --Shooting()
+    ShootLaser()
 end
 
 function VerifyCam()
@@ -66,6 +71,21 @@ function VerifyCam()
     end 
 end
 
+function ShootLaser()
+    if atirar == true and love.mouse.isDown(1) then
+        local mouseX, mouseY = cam:mousePosition()
+
+        Laser:addLaser(mouseX, mouseY, Player.x, Player.y)
+        --projectileSound:stop()
+        --projectileSound:play()
+        local clone = projectileSound:clone()
+	    clone:play()
+        atirar = false
+    elseif not love.mouse.isDown(1) then
+        atirar = true
+    end
+end
+
 function Shooting()
     if atirar == true and love.mouse.isDown(1) then
         local mouseX, mouseY = cam:mousePosition()
@@ -82,10 +102,6 @@ function Shooting()
     end
 end
 
-function beginContact(a, b, collision)
-	---Bullet.beginContact(a, b, collision)
-end
-
 function love.draw()
     cam:attach()
     for i = 0, love.graphics.getWidth() / background:getWidth() do
@@ -94,11 +110,13 @@ function love.draw()
         end
     end
     Bullet.drawAll()
+    Laser.drawAll()
     Player:draw()
     Enemy.drawAll()
     cam:detach()
     love.graphics.setColor(1, 1, 1)
     love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
+
    --[[ Camera:apply()
     Player:draw()
     Camera:clear()]]
