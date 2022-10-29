@@ -123,9 +123,9 @@ function Player:draw()
    
 
     if self.animation.direction == "right" then
-        love.graphics.draw(self.gun,self.body:getX(),self.body:getY() + 5,self.gunAngle,1,1,25,10)
+        love.graphics.draw(self.gun,self.body:getX() - 11,self.body:getY() + 5,self.gunAngle,1,1,8,5)
     else
-        love.graphics.draw(self.gun,self.body:getX(),self.body:getY() + 5,self.gunAngle,-1,1,25,10)
+        love.graphics.draw(self.gun,self.body:getX() +11,self.body:getY() + 5,self.gunAngle,-1,1,8,5)
     end
     
 
