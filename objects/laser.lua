@@ -4,16 +4,9 @@ local Laser = {}
 local Lasers =  {}
 
 Laser.__index = Laser
-_G.a = "não"
-_G.b = "não "
-_G.c = "não "
 
 function Laser:load()
 
-end
-
-function Laser:laserCount()
-    return #Lasers
 end
 
 function Laser:addLaser(mouseX, mouseY, initX, initY)
@@ -37,7 +30,7 @@ function Laser:addLaser(mouseX, mouseY, initX, initY)
     instance.body = love.physics.newBody (World, instance.x, instance.y, "dynamic")
     instance.shape = love.physics.newEdgeShape(instance.x, instance.y, instance.dx, instance.dy)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
-
+    instance.tableX, instance.tableY = instance:pointsBetween()
     table.insert(Lasers, instance)
 end
 
@@ -60,10 +53,10 @@ function Laser:pointsBetween()
     local diffX = self.x - self.dx
     local diffY = self.y - self.dy
     local x, y
-    local quant = 1000
-        for i=1, quant do
-            x = math.abs(diffX) / quant * i + self.dx
-            y = math.abs(diffY) / quant * i + self.dy
+    local quant = 200
+        for i=1, quant, 1 do
+            x = diffX / quant * i + self.dx
+            y = diffY / quant * i + self.dy
             table.insert(tableX, x)
             table.insert(tableY, y)
         end
@@ -78,9 +71,8 @@ end
 
 function Laser:touchEnemies(enemies)
     for i, instance in ipairs(enemies) do
-        local tableX, tableY = self:pointsBetween()
-        for j=1, #tableX do
-            local help = self:distance(tableX[j], tableY[j], instance.x, instance.y, instance.size)
+        for j=1, #self.tableX do
+            local help = self:distance(self.tableX[j], self.tableY[j], instance.x, instance.y, instance.size)
             if help == true then
                 self.onScreen = false
                 instance.onScreen = false
@@ -92,7 +84,7 @@ end
 function Laser:distance (x1, y1, x2, y2, rad)
     local deltaX = x1 - x2
     local deltaY = y1 - y2
-    return math.sqrt(math.abs(deltaX) ^ 2 + math.abs(deltaY) ^ 2) <= rad
+    return math.sqrt(deltaX*deltaX + deltaY*deltaY) <= rad
 end
 
 function Laser:removeLaser(index, onScreen)
@@ -109,6 +101,10 @@ end
 
 function Laser:draw()
     love.graphics.line(self.x, self.y, self.dx, self.dy)
+
+    --[[for i= 1, #self.tableX do
+        love.graphics.circle("line", self.tableX[i], self.tableY[i], 5)
+    end]]
 end
 
 return Laser
