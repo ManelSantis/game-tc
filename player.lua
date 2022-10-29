@@ -33,12 +33,24 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     for i = 1, self.animation.max_frames do
         self.quads[i] = love.graphics.newQuad(QUAD_WIDTH * (i-1),0,QUAD_WIDTH,QUAD_HEIGH,SPRITE_WIDTH,SPRITE_HEIGH)
     end
+
+    self.gun = love.graphics.newImage("img/gun.png")
+    self.gunAngle = 0
 end
 
 function Player:update(dt)
     self:move(dt)
     
-
+    local deltaX =  self.body:getX() - mX 
+    local deltaY = self.body:getY() - mY
+   
+    self.gunAngle = math.atan2(deltaY, deltaX) 
+    if self.animation.direction == "right" then
+        self.gunAngle =  self.gunAngle + math.rad(180)
+    end
+    if self.animation.direction == "left" then
+        self.gunAngle =  self.gunAngle  
+    end
     if not self.animation.idle then
         self.animation.timer = self.animation.timer + dt
 
@@ -102,6 +114,22 @@ function Player:draw()
     else
         love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
     end
+
+    
+        
+        
+    
+        --love.graphics.draw(self.gun,self.body:getX(),self.body:getY() + 5,self.gunAngle,1,1,25,10)
+   
+
+    if self.animation.direction == "right" then
+        love.graphics.draw(self.gun,self.body:getX(),self.body:getY() + 5,self.gunAngle,1,1,25,10)
+    else
+        love.graphics.draw(self.gun,self.body:getX(),self.body:getY() + 5,self.gunAngle,-1,1,25,10)
+    end
+    
+    
+
 end
 
 return Player

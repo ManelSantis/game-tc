@@ -24,6 +24,8 @@ function love.load()
 end
 
 function love.update(dt)
+    _G.mX ,_G.mY = cam:mousePosition()
+    
     World:update(dt)
     Player:update(dt)
     cam:lookAt(Player.x, Player.y) 
@@ -59,6 +61,7 @@ end
 function Shooting()
     if atirar == true and love.mouse.isDown(1) then
         local mouseX, mouseY = cam:mousePosition()
+
         Bullet:addBullet(mouseX, mouseY, Player.x, Player.y)
         atirar = false
     elseif not love.mouse.isDown(1) then
