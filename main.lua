@@ -6,12 +6,15 @@ local Enemy = require("objects/enemy")
 local Bullet = require("objects/bullet")
 local atirar = true
 
+local music
 function love.load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
     World:setCallbacks(beginContact, endContact)
 
     _G.background = love.graphics.newImage("img/background.png")
+
+    music = love.audio.newSource("audio/Blast From The Past - Jeremy Black.mp3", "stream")
     
     Player:load(background:getWidth(), background:getHeight(), 30, 250, 250)
     
@@ -24,6 +27,10 @@ function love.load()
 end
 
 function love.update(dt)
+    if not music:isPlaying( ) then
+		love.audio.play( music )
+	end
+
     _G.mX ,_G.mY = cam:mousePosition()
     
     World:update(dt)

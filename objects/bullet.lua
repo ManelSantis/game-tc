@@ -8,6 +8,9 @@ Bullet.__index = Bullet
 function Bullet:load(limit_x, limit_y)
     _G.LimitX = limit_x
     _G.LimitY = limit_y
+
+    self.projectileSound =  love.audio.newSource("audio/376694__daleonfire__laser.wav","static")
+
 end
 
 function Bullet:addBullet(mouseX, mouseY, initX, initY)
@@ -35,6 +38,7 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
 
     table.insert(Bullets, instance)
+    self.projectileSound:play()
 end
 
 function Bullet:update(dt, i, enemies)

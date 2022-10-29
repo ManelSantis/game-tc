@@ -44,6 +44,12 @@ function Player:update(dt)
     local deltaX =  self.body:getX() - mX 
     local deltaY = self.body:getY() - mY
    
+    if mX > self.body:getX() then
+        self.animation.direction = "right"
+    else
+        self.animation.direction = "left"
+    end
+
     self.gunAngle = math.atan2(deltaY, deltaX) 
     if self.animation.direction == "right" then
         self.gunAngle =  self.gunAngle + math.rad(180)
@@ -123,9 +129,9 @@ function Player:draw()
    
 
     if self.animation.direction == "right" then
-        love.graphics.draw(self.gun,self.body:getX() - 11,self.body:getY() + 5,self.gunAngle,1,1,8,5)
+        love.graphics.draw(self.gun,self.body:getX() - 5,self.body:getY() + 5,self.gunAngle,1,1,15,5)
     else
-        love.graphics.draw(self.gun,self.body:getX() +11,self.body:getY() + 5,self.gunAngle,-1,1,8,5)
+        love.graphics.draw(self.gun,self.body:getX() +5,self.body:getY() + 5,self.gunAngle,-1,1,15,5)
     end
     
     
