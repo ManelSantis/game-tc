@@ -37,6 +37,9 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
 
     self.gun = love.graphics.newImage("img/gun.png")
     self.gunAngle = 0
+
+    self.jetSound = love.audio.newSource("audio/376694__daleonfire__laser.wav","stream")
+    self.jetSound:setVolume(1.4)
 end
 
 function Player:update(dt)
@@ -81,6 +84,7 @@ function Player:move(dt)
         end
         self.animation.idle = false
         self.animation.direction = "right"
+        self.jetSound:play()
     end
 
     if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
@@ -90,6 +94,7 @@ function Player:move(dt)
         end
         self.animation.idle = false
         self.animation.direction = "left"
+        self.jetSound:play()
     end
 
     if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
@@ -98,6 +103,7 @@ function Player:move(dt)
             self.body:applyForce(0,self.velY)
         end
         self.animation.idle = false
+        self.jetSound:play()
     end
 
     if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
@@ -106,8 +112,9 @@ function Player:move(dt)
             self.body:applyForce(0,-self.velY)
         end
         self.animation.idle = false
+        self.jetSound:play()
     end   
-
+    self.jetSound:pause()
     self.animation.idle = true
     self.x,self.y =  self.body:getX(),self.body:getY()
     --self.body:setPosition(self.x, self.y)
