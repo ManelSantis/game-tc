@@ -77,6 +77,9 @@ function Player:update(dt)
 end
 
 function Player:move(dt)
+
+    self.animation.idle = true
+
     if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
         if self.body:getX() < (self.lx - self.size - 10) then
             --self.x = self.x + self.velX * dt
@@ -132,7 +135,7 @@ function Player:move(dt)
     end
 
     self.jetSound:pause()
-    self.animation.idle = true
+    
     self.x,self.y =  self.body:getX(),self.body:getY()
     --self.body:setPosition(self.x, self.y)
 end
@@ -141,17 +144,17 @@ function Player:draw()
     --love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
     love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
     if self.animation.direction == "right" then
-        --if not self.animation.idle then
+        if not self.animation.idle then
             love.graphics.draw(self.sprite_Walk, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
-        --else
-        --    love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
-        --end
+        else
+            love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
+        end
     elseif self.animation.direction == "left" then
-        --if not self.animation.idle then
+        if not self.animation.idle then
             love.graphics.draw(self.sprite_Walk, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
-        --else
-        --    love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
-        --end
+        else
+            love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+        end
     end
 
     
