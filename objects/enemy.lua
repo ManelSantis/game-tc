@@ -45,6 +45,7 @@ function Enemy:addEnemy(_level, _size)
 
     instance.body = love.physics.newBody (World, instance.x, instance.y, "dynamic")
     instance.body:setMass(10)
+    instance.body:setLinearDamping( 0.4 )
     instance.shape = love.physics.newCircleShape(instance.size)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
            
@@ -80,6 +81,7 @@ function Enemy:move(dt, player_x, player_y, i)
     local dx = player_x - self.body:getX()
     local dy = player_y - self.body:getY()
 
+    --[[
     if distance > P_size + self.size then
         self.x = self.x + dx / distance * 100 * dt
         self.y = self.y + dy / distance * 100 * dt
@@ -89,11 +91,26 @@ function Enemy:move(dt, player_x, player_y, i)
         self.y = self.y - dy / distance * 100 * dt
         self.body:setPosition(self.x, self.y)
     end
-
+    ]]
 
     --self.y = self.body:getY()
     --self.x = self.body:getX()
-    --self.body:applyForce(-math.cos(angle) * 200,math.sin(angle) * 200)
+    local tx,ty
+    if dx > 0 then
+        tx = 1
+    elseif dx < 0  then
+        tx = -1
+    else
+        tx = 0
+    end
+    if dy > 0 then
+        ty = 1
+    elseif dy < 0  then
+        ty = -1
+    else
+        ty = 0
+    end
+    self.body:applyForce(tx * 200,ty * 200)
     if dx < 0  then
         self.animation.idle = false
         self.animation.direction = "left"
@@ -147,7 +164,7 @@ function Enemy:draw()
     love.graphics.print(self.body:getX(),self.body:getX(), self.body:getY()+ 100)
     love.graphics.print(self.body:getY(),self.body:getX(), self.body:getY()+ 110)
     love.graphics.setColor(1, 1, 1)
-    --love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
+    love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
     --love.graphics.scale(1)
     if self.animation.direction == "right" then
         love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)

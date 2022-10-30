@@ -22,7 +22,7 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
             frame = 1,
             max_frames = 4,
             speed = 20,
-            timer = 0.3
+            timer = 10
     }
 
     instance.speed = 700
@@ -71,10 +71,10 @@ function Bullet.updateAll(dt, enemies)
 end
 
 function Bullet:animate(dt)
-    self.animation.timer = self.animation.timer + dt
+    self.animation.timer = self.animation.timer - dt
 
-    if self.animation.timer > 0.2 then
-        self.animation.timer = 0.1
+    if self.animation.timer <= 0 then
+        self.animation.timer = 10
         self.animation.frame = self.animation.frame + 1
 
         if(self.animation.frame > self.animation.max_frames) then

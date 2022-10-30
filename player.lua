@@ -13,7 +13,7 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.body = love.physics.newBody (World, self.x, self.y, "dynamic")
     self.shape = love.physics.newCircleShape(self.size)
     self.fixture = love.physics.newFixture(self.body, self.shape, 1)
-
+    self.body:setLinearDamping( 0.4 )
     self.type = "player"
 
     self.sprite = love.graphics.newImage("img/char_idle.png")
