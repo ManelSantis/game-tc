@@ -98,7 +98,7 @@ function Player:move(dt)
     end
 
     if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
-        if self.body:getY() < (self.ly - self.size - 10) then
+        if self.body:getY() < (self.ly - self.size - 40) then
             --self.y = self.y + self.velY * dt
             self.body:applyForce(0,self.velY)
         end
@@ -107,13 +107,30 @@ function Player:move(dt)
     end
 
     if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
-        if self.body:getY() > (0 + self.size + 10) then
+        if self.body:getY() > (0 + self.size + 20) then
             --self.y = self.y - self.velY * dt
-            self.body:applyForce(0,-self.velY)
+            self.body:applyForce(0, -self.velY)
         end
         self.animation.idle = false
         self.jetSound:play()
-    end   
+    end
+
+    if self.body:getX() > (self.lx - self.size - 10) then
+        self.body:setX(self.lx - self.size - 10)
+    end
+
+    if self.body:getX() < (0 + self.size + 10) then
+        self.body:setX(0 + self.size + 10)
+    end
+
+    if self.body:getY() > (self.ly - self.size - 50) then
+        self.body:setY(self.ly - self.size - 50)
+    end
+
+    if self.body:getY() < (0 + self.size + 30) then
+        self.body:setY(0 + self.size + 30)
+    end
+
     self.jetSound:pause()
     self.animation.idle = true
     self.x,self.y =  self.body:getX(),self.body:getY()

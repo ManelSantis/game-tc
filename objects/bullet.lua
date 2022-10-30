@@ -8,10 +8,23 @@ Bullet.__index = Bullet
 function Bullet:load(limit_x, limit_y)
     _G.LimitX = limit_x
     _G.LimitY = limit_y
+
+    _G.SW, _G.SH = 80, 20
+    _G.QW = 20
+    _G.QH = SH
 end
 
 function Bullet:addBullet(mouseX, mouseY, initX, initY)
     local instance = setmetatable({}, Bullet)
+
+    instance.sprite = love.graphics.newImage("img/bullet_tile.png")
+    instance.animation = {
+            frame = 1,
+            max_frames = 4,
+            speed = 20,
+            timer = 0.3
+    }
+
     instance.speed = 700
     
     local deltaX = initX - mouseX
@@ -34,11 +47,20 @@ function Bullet:addBullet(mouseX, mouseY, initX, initY)
     instance.shape = love.physics.newCircleShape(instance.size)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
 
+    instance.quads = {}
+
+    for i = 1, instance.animation.max_frames do
+        instance.quads[i] = love.graphics.newQuad(QW * (i-1), 0, QW, QH, SW, SH)
+    end
+
     table.insert(Bullets, instance)
 end
 
 function Bullet:update(dt, i, enemies)
-    self:moveBullet(dt, i, enemies)
+    self:moveBullet(dt, enemies)
+
+    self:removeBullet(i, self.onScreen)
+
 end
 
 
@@ -48,12 +70,25 @@ function Bullet.updateAll(dt, enemies)
     end
 end
 
-function Bullet:moveBullet(dt, i, enemies)
+function Bullet:animate(dt)
+    self.animation.timer = self.animation.timer + dt
+
+    if self.animation.timer > 0.2 then
+        self.animation.timer = 0.1
+        self.animation.frame = self.animation.frame + 1
+
+        if(self.animation.frame > self.animation.max_frames) then
+            self.animation.frame = 1
+        end
+    end
+end
+
+function Bullet:moveBullet(dt, enemies)
 
     --local dx = self.mouseX - self.x
     --local dy = self.mouseY - self.y
-    
     --local d = self:distance(self.mouseX, self.mouseY, self.x, self.y)
+    
     self.x = self.x + self.dx * self.speed * dt
     self.y = self.y + self.dy * self.speed * dt
     self.body:applyForce(self.x, self.y)
@@ -67,15 +102,14 @@ function Bullet:moveBullet(dt, i, enemies)
     end
 
     self:touchEnemies(enemies)
-
-    self:removeBullet(i, self.onScreen)
+    self:animate(dt)
 
 end
 
 function Bullet:touchEnemies(enemies)
     for i, instance in ipairs(enemies) do
         local distance = self:distance(instance.body:getX(), instance.body:getY())
-        if distance < instance.size + instance.size then
+        if distance <= instance.size then
             self.onScreen = false
             instance.onScreen = false
             return
@@ -101,8 +135,16 @@ function Bullet.drawAll()
 end
 
 function Bullet:draw()
+
+    local r = math.random(110, 255)
+    local g = math.random(110, 255)
+    local b = math.random(110, 255)
+    love.graphics.setColor(r / 255, g / 255, b / 255)
+    --love.graphics.circle("line", self.x, self.y, self.size)
+    love.graphics.draw(self.sprite, self.quads[self.animation.frame], self.x - QW / 2, self.y - QH / 2)
+
     love.graphics.setColor(1, 1, 1)
-    love.graphics.circle("line", self.x, self.y, self.size)
+
 end
 
 return Bullet
