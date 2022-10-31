@@ -14,6 +14,10 @@ local heart
 
 local startShootTimer = 0.5
 local shootTimer = 0
+local startLaserShootTimer = 2
+local laserShootTimer = 0
+
+local gun = 1
 function love.load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
@@ -51,14 +55,29 @@ function love.update(dt)
     Bullet.updateAll(dt, Enemy:activeEnemies())
     Laser.updateAll(dt, Enemy:activeEnemies())
     VerifyCam()
-    Shooting()
-    --ShootLaser()
-    
-    if shootTimer >=0 then
-        shootTimer = shootTimer -dt
+    if gun == 1 then
+        Shooting()
+        if shootTimer >=0 then
+            shootTimer = shootTimer -dt
+            
+        end
         
+    elseif gun  == 2 then
+    
+        ShootLaser()
+        if laserShootTimer >=0 then
+            laserShootTimer = laserShootTimer -dt
+            
+        end
     end
     
+    
+    if love.keyboard.isDown('1') then
+        gun = 1
+    end
+    if love.keyboard.isDown('2') then
+        gun = 2
+    end
 end
 
 function VerifyCam()
@@ -86,7 +105,7 @@ end
 
 function ShootLaser()
     if atirar == true and love.mouse.isDown(1)  then
-        if shootTimer <= 0 then
+        if laserShootTimer <= 0 then
             
             local mouseX, mouseY = cam:mousePosition()
             
@@ -97,7 +116,7 @@ function ShootLaser()
             clone:play()
             atirar = false
 
-            shootTimer = startShootTimer
+            laserShootTimer = startLaserShootTimer
         end
     elseif not love.mouse.isDown(1) then
         atirar = true
