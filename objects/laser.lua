@@ -106,7 +106,9 @@ function Laser:touchEnemies(enemies)
             local help = self:distance(self.tableX[j], self.tableY[j], instance.x, instance.y, instance.size)
             if help == true then
                 self.onScreen = false
-                instance.onScreen = false
+                instance.life = instance.life - 100
+                --instance.onScreen = false
+                break
             end
         end
     end

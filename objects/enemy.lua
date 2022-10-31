@@ -65,6 +65,10 @@ function Enemy:update(dt, player_x, player_y, j)
        self.quads[i] = love.graphics.newQuad(QUAD_WIDTH * (i-1),0,QUAD_WIDTH,QUAD_HEIGH,SPRITE_WIDTH,SPRITE_HEIGH)
     end
 
+    if self.life <= 0 then
+        self.onScreen = false
+    end
+
     self:removeEnemy(j, self.onScreen)
 
 end
@@ -72,10 +76,6 @@ end
 function Enemy.updateAll(dt, player_x, player_y)
     for i, instance in ipairs(Enemies) do
         instance:update(dt, player_x, player_y, i)
-
-        if instance.life <= 0 then
-            --instance:release();
-        end
     end
 end
 
