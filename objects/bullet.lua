@@ -111,7 +111,8 @@ function Bullet:touchEnemies(enemies)
         local distance = self:distance(instance.body:getX(), instance.body:getY())
         if distance <= instance.size then
             self.onScreen = false
-            instance.onScreen = false
+            --instance.onScreen = false
+            instance.life = instance.life - 50
             return
         end
     end

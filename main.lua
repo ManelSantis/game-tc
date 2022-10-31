@@ -10,12 +10,17 @@ local atirar = true
 
 local music
 local projectileSound
+local heart
+
+local startShootTimer = 0.5
+local shootTimer = 0
 function love.load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
     World:setCallbacks(beginContact, endContact)
 
     _G.background = love.graphics.newImage("img/background.png")
+    heart = love.graphics.newImage("img/heart.png")
 
     music = love.audio.newSource("audio/Blast From The Past - Jeremy Black.mp3", "stream")
     music:setVolume(0.5)
@@ -46,8 +51,14 @@ function love.update(dt)
     Bullet.updateAll(dt, Enemy:activeEnemies())
     Laser.updateAll(dt, Enemy:activeEnemies())
     VerifyCam()
-    --Shooting()
-    ShootLaser()
+    Shooting()
+    --ShootLaser()
+    
+    if shootTimer >=0 then
+        shootTimer = shootTimer -dt
+        
+    end
+    
 end
 
 function VerifyCam()
@@ -74,15 +85,20 @@ function VerifyCam()
 end
 
 function ShootLaser()
-    if atirar == true and love.mouse.isDown(1) then
-        local mouseX, mouseY = cam:mousePosition()
+    if atirar == true and love.mouse.isDown(1)  then
+        if shootTimer <= 0 then
+            
+            local mouseX, mouseY = cam:mousePosition()
+            
+            Laser:addLaser(mouseX, mouseY, Player.x, Player.y)
+            --projectileSound:stop()
+            --projectileSound:play()
+            local clone = projectileSound:clone()
+            clone:play()
+            atirar = false
 
-        Laser:addLaser(mouseX, mouseY, Player.x, Player.y)
-        --projectileSound:stop()
-        --projectileSound:play()
-        local clone = projectileSound:clone()
-	    clone:play()
-        atirar = false
+            shootTimer = startShootTimer
+        end
     elseif not love.mouse.isDown(1) then
         atirar = true
     end
@@ -90,15 +106,19 @@ end
 
 function Shooting()
     if atirar == true and love.mouse.isDown(1) then
-        local mouseX, mouseY = cam:mousePosition()
+        if shootTimer <= 0 then
+            local mouseX, mouseY = cam:mousePosition()
+            
+            Bullet:addBullet(mouseX, mouseY, Player.x, Player.y)
+            --projectileSound:stop()
+            --projectileSound:play()
+            
+            local clone = projectileSound:clone()
+            clone:play()
+            atirar = false
+            shootTimer = startShootTimer
+        end
 
-        Bullet:addBullet(mouseX, mouseY, Player.x, Player.y)
-        --projectileSound:stop()
-        --projectileSound:play()
-
-        local clone = projectileSound:clone()
-	    clone:play()
-        atirar = false
     elseif not love.mouse.isDown(1) then
         atirar = true
     end
@@ -117,7 +137,15 @@ function love.draw()
     Enemy.drawAll()
     cam:detach()
     love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
+    love.graphics.print('shootTimer: ' .. shootTimer, 10,90)
+    for i = 1, Player.life, 10 do
+        if Player.life % 10 == 0 then
+            love.graphics.draw(heart,20 + i *3,50)
 
+        end
+    end
+    --love.graphics.draw(heart,90,50)
+    --love.graphics.draw(heart,130,50)
    --[[ Camera:apply()
     Player:draw()
     Camera:clear()]]

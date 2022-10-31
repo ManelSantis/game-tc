@@ -24,6 +24,8 @@ function Enemy:addEnemy(_level, _size)
     QUAD_HEIGH = SPRITE_HEIGH
     instance.touthPLayer = false;
 
+    instance.life = 100
+
     if dice == 1 then --Enemy come from above
         _x = math.random(_size, love.graphics.getWidth())
         _y = -_size * 4
@@ -70,6 +72,10 @@ end
 function Enemy.updateAll(dt, player_x, player_y)
     for i, instance in ipairs(Enemies) do
         instance:update(dt, player_x, player_y, i)
+
+        if instance.life <= 0 then
+            --instance:release();
+        end
     end
 end
 
@@ -93,8 +99,8 @@ function Enemy:move(dt, player_x, player_y, i)
     end
     ]]
 
-    --self.y = self.body:getY()
-    --self.x = self.body:getX()
+    self.y = self.body:getY()
+    self.x = self.body:getX()
     local tx,ty
     if dx > 0 then
         tx = 1
@@ -110,7 +116,8 @@ function Enemy:move(dt, player_x, player_y, i)
     else
         ty = 0
     end
-    self.body:applyForce(tx * 200,ty * 200)
+    --self.body:applyForce(tx * 200,ty * 200)
+    self.body:applyForce(dx / distance * 200,dy / distance * 200)
     if dx < 0  then
         self.animation.idle = false
         self.animation.direction = "left"
@@ -133,6 +140,7 @@ function Enemy:move(dt, player_x, player_y, i)
     end
 
 end
+
 
 function Enemy:removeEnemy(index, onScreen)
     if onScreen == false then

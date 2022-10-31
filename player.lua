@@ -9,7 +9,7 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     _G.P_size = _size
     self.velX = speedX
     self.velY = speedY
-
+    self.life = 100
     self.body = love.physics.newBody (World, self.x, self.y, "dynamic")
     self.shape = love.physics.newCircleShape(self.size)
     self.fixture = love.physics.newFixture(self.body, self.shape, 1)
@@ -38,8 +38,8 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.gun = love.graphics.newImage("img/gun.png")
     self.gunAngle = 0
 
-    self.jetSound = love.audio.newSource("audio/376694__daleonfire__laser.wav","stream")
-    self.jetSound:setVolume(1.4)
+    self.jetSound = love.audio.newSource("audio/402816__jacksonacademyashmore__jetpack-loop.wav","stream")
+    self.jetSound:setVolume(0.5)
 end
 
 function Player:update(dt)
@@ -79,7 +79,7 @@ end
 function Player:move(dt)
 
     self.animation.idle = true
-
+    self.jetSound:pause()
     if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
         if self.body:getX() < (self.lx - self.size - 10) then
             --self.x = self.x + self.velX * dt
@@ -134,7 +134,7 @@ function Player:move(dt)
         self.body:setY(0 + self.size + 30)
     end
 
-    self.jetSound:pause()
+    
     
     self.x,self.y =  self.body:getX(),self.body:getY()
     --self.body:setPosition(self.x, self.y)
