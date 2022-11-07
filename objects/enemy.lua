@@ -53,6 +53,11 @@ function Enemy:addEnemy(_level, _size)
            
     instance.type = "enemy"
     instance.quads = {}
+
+    for i = 1, instance.animation.max_frames do
+        instance.quads[i] = love.graphics.newQuad(QUAD_WIDTH * (i-1),0,QUAD_WIDTH,QUAD_HEIGH,SPRITE_WIDTH,SPRITE_HEIGH)
+     end
+
     instance.onScreen = true
 
     table.insert(Enemies, instance)
@@ -61,9 +66,7 @@ end
 function Enemy:update(dt, player_x, player_y, j)
     self:move(dt, player_x, player_y, j)
     
-    for i = 1, self.animation.max_frames do
-       self.quads[i] = love.graphics.newQuad(QUAD_WIDTH * (i-1),0,QUAD_WIDTH,QUAD_HEIGH,SPRITE_WIDTH,SPRITE_HEIGH)
-    end
+    
 
     if self.life <= 0 then
         self.onScreen = false

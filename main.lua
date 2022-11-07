@@ -17,6 +17,9 @@ local shootTimer = 0
 local startLaserShootTimer = 2
 local laserShootTimer = 0
 
+local countEnemies = 0
+local waveCount = 0
+
 local gun = 1
 function love.load()
     _G.cam = camera()
@@ -36,8 +39,8 @@ function love.load()
     Laser:load()
     Enemy:addEnemy(1, 20)
     Enemy:addEnemy(2, 20)
-    Enemy:addEnemy(3, 20)
-    Enemy:addEnemy(4, 20)
+    countEnemies = #Enemy:activeEnemies()
+    waveCount = countEnemies
 end
 
 function love.update(dt)
@@ -77,6 +80,20 @@ function love.update(dt)
     end
     if love.keyboard.isDown('2') then
         gun = 2
+    end
+
+    countEnemies = #Enemy:activeEnemies()
+    
+    if countEnemies == 0 then
+        Spawn()
+    end
+end
+
+function Spawn()
+    waveCount = waveCount + 5
+
+    for i = 1, waveCount do
+        Enemy:addEnemy(math.random(1, 4), 20)
     end
 end
 
