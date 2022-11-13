@@ -6,6 +6,7 @@ local Enemy = require("objects/enemy")
 local Bullet = require("objects/bullet")
 local Laser = require("objects/laser")
 local Obstacle = require("objects/obstacle")
+local Drop = require("objects/drop")
 
 local atirar = true
 
@@ -21,7 +22,22 @@ local laserShootTimer = 0
 local countEnemies = 0
 local waveCount = 0
 
-local gun = 1
+POSSIBLE_DROPS_X = {}
+POSSIBLE_DROPS_Y = {}
+
+LASER = false
+LASER_TIMER = 0
+END_LASER = 0
+SLOW = false
+SLOW_TIMER = 0
+END_SLOW = 0
+SPEED = false
+SPEED_TIMER = 0
+END_SPEED = 0
+INVENSIBLE = false
+INVENSIBLE_TIMER = 0
+END_INVENSIBLE = 0
+
 function love.load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
@@ -38,6 +54,7 @@ function love.load()
     Enemy:load()
     Bullet:load(background:getWidth(), background:getHeight())
     Laser:load()
+    Drop:load()
     Enemy:addEnemy(1, 20, Player.x, Player.y, background:getWidth(), background:getHeight())
     Enemy:addEnemy(2, 20, Player.x, Player.y, background:getWidth(), background:getHeight())
     countEnemies = #Enemy:activeEnemies()
@@ -56,39 +73,39 @@ function love.update(dt)
     World:update(dt)
     Player:update(dt)
     
-    cam:lookAt(Player.x, Player.y) 
+    cam:lookAt(Player.body:getX(), Player.body:getY()) 
     Enemy.updateAll(dt, Player.body:getX(), Player.body:getY())
+    Drop.updateAll(dt, Player.body:getX(), Player.body:getY())
     Bullet.updateAll(dt, Enemy:activeEnemies())
     Laser.updateAll(dt, Enemy:activeEnemies())
     VerifyCam()
-    if gun == 1 then
+    
+    if LASER == false then
         Shooting()
         if shootTimer >=0 then
             shootTimer = shootTimer -dt
-            
-        end
-        
-    elseif gun  == 2 then
-    
-        ShootLaser()
-        if laserShootTimer >=0 then
-            laserShootTimer = laserShootTimer -dt
-            
         end
     end
     
+    DropsTimers()
     
-    if love.keyboard.isDown('1') then
-        gun = 1
-    end
-    if love.keyboard.isDown('2') then
-        gun = 2
-    end
-
     countEnemies = #Enemy:activeEnemies()
     
     if countEnemies == 0 then
         Spawn()
+    end
+
+    for i=1, #POSSIBLE_DROPS_X do
+        local verify = math.random(1, 100)
+
+        if (verify >= 1) and (verify <= 20) then
+            Drop:addDrop(POSSIBLE_DROPS_X[i], POSSIBLE_DROPS_Y[i], math.random(1, 5))
+        end
+    end
+
+    for i=1, #POSSIBLE_DROPS_X do
+        table.remove(POSSIBLE_DROPS_X, i)
+        table.remove(POSSIBLE_DROPS_Y, i)
     end
 end
 
@@ -97,6 +114,36 @@ function Spawn()
 
     for i = 1, waveCount do
         Enemy:addEnemy(math.random(1, 4), 20, Player.x, Player.y, background:getWidth(), background:getHeight())
+    end
+end
+
+function DropsTimers()
+    if LASER == true and END_LASER <= 15000 then
+        ShootLaser()
+        if laserShootTimer >=0 then
+            laserShootTimer = laserShootTimer -dt
+        end
+        END_LASER = (love.timer.getTime() -  LASER_TIMER) * 1000
+    else
+        LASER = false
+    end
+
+    if SLOW == true and END_SLOW <= 8000 then
+        END_SLOW = (love.timer.getTime() -  SLOW_TIMER) * 1000
+    else
+        SLOW = false
+    end
+
+    if SPEED == true and END_SPEED <= 7000 then
+        END_SPEED = (love.timer.getTime() -  SPEED_TIMER) * 1000
+    else
+        SPEED = false
+    end
+
+    if INVENSIBLE == true and END_INVENSIBLE <= 6000 then 
+        END_INVENSIBLE = (love.timer.getTime() -  INVENSIBLE_TIMER) * 1000
+    else
+        INVENSIBLE = false
     end
 end
 
@@ -174,11 +221,11 @@ function love.draw()
     Laser.drawAll()
     Player:draw()
     Enemy.drawAll()
-
-    Obstacle:draw();
+    Drop.drawAll()
+    Obstacle:draw()
     cam:detach()
     love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
-    love.graphics.print('shootTimer: ' .. shootTimer, 10,90)
+
     for i = 1, Player.life, 10 do
         if Player.life % 10 == 0 then
             love.graphics.draw(heart,20 + i *3,50)

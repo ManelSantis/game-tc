@@ -67,6 +67,8 @@ function Enemy:addEnemy(_level, _size, playerX, playerY, limitX, limitY)
     instance.body:setLinearDamping( 0.4 )
     instance.shape = love.physics.newCircleShape(instance.size)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
+
+    
            
     instance.type = "enemy"
     instance.quads = {}
@@ -82,8 +84,6 @@ end
 
 function Enemy:update(dt, player_x, player_y, j)
     self:move(dt, player_x, player_y, j)
-    
-    
 
     if self.life <= 0 then
         self.onScreen = false
@@ -136,8 +136,13 @@ function Enemy:move(dt, player_x, player_y, i)
     else
         ty = 0
     end
-    --self.body:applyForce(tx * 200,ty * 200)
-    self.body:applyForce(dx / distance * 200,dy / distance * 200)
+
+    if SLOW == true then
+        self.body:applyForce(dx / distance * 100,dy / distance * 100)
+    else
+        self.body:applyForce(dx / distance * 200,dy / distance * 200)
+    end
+
     if dx < 0  then
         self.animation.idle = false
         self.animation.direction = "left"
@@ -161,9 +166,10 @@ function Enemy:move(dt, player_x, player_y, i)
 
 end
 
-
 function Enemy:removeEnemy(index, onScreen)
     if onScreen == false then
+        table.insert(POSSIBLE_DROPS_X, Enemies[index].x)
+        table.insert(POSSIBLE_DROPS_Y, Enemies[index].y)
         table.remove(Enemies, index)
     end
 end
