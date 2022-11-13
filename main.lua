@@ -37,8 +37,8 @@ function love.load()
     Enemy:load()
     Bullet:load(background:getWidth(), background:getHeight())
     Laser:load()
-    Enemy:addEnemy(1, 20)
-    Enemy:addEnemy(2, 20)
+    Enemy:addEnemy(1, 20, Player.x, Player.y, background:getWidth(), background:getHeight())
+    Enemy:addEnemy(2, 20, Player.x, Player.y, background:getWidth(), background:getHeight())
     countEnemies = #Enemy:activeEnemies()
     waveCount = countEnemies
 end
@@ -90,10 +90,10 @@ function love.update(dt)
 end
 
 function Spawn()
-    waveCount = waveCount + 5
+    waveCount = waveCount + 3
 
     for i = 1, waveCount do
-        Enemy:addEnemy(math.random(1, 4), 20)
+        Enemy:addEnemy(math.random(1, 4), 20, Player.x, Player.y, background:getWidth(), background:getHeight())
     end
 end
 

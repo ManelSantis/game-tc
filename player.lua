@@ -142,7 +142,6 @@ end
 
 function Player:draw()
     --love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
-    love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
     if self.animation.direction == "right" then
         if not self.animation.idle then
             love.graphics.draw(self.sprite_Walk, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
@@ -157,23 +156,11 @@ function Player:draw()
         end
     end
 
-    
-        
-        
-    
-        --love.graphics.draw(self.gun,self.body:getX(),self.body:getY() + 5,self.gunAngle,1,1,25,10)
-   
-
     if self.animation.direction == "right" then
         love.graphics.draw(self.gun,self.body:getX() - 5,self.body:getY() + 5,self.gunAngle,1,1,15,5)
     else
         love.graphics.draw(self.gun,self.body:getX() +5,self.body:getY() + 5,self.gunAngle,-1,1,15,5)
     end
-    
-
-    love.graphics.circle("line", self.x, self.y, self.size * 3)
-
-    
 
 end
 
