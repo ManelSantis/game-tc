@@ -24,7 +24,19 @@ function Enemy:addEnemy(_level, _size)
     QUAD_HEIGH = SPRITE_HEIGH
     instance.touthPLayer = false;
 
-    instance.life = 100
+    if _level == 1 then
+       instance.life = 100
+       instance.damage = 10
+    elseif _level ==2 then 
+        instance.life = 120
+        instance.damage = 15
+    elseif _level ==3 then 
+        instance.life = 160
+        instance.damage = 20
+    elseif _level ==4 then 
+        instance.life = 200
+        instance.damage = 25
+    end
 
     if dice == 1 then --Enemy come from above
         _x = math.random(_size, love.graphics.getWidth())
@@ -165,7 +177,25 @@ end
 
 function Enemy.drawAll()
     for i,instance in ipairs(Enemies) do
+        if instance.level == 1 then
+            love.graphics.setColor(1, 1, 1)
+        elseif instance.level == 2 then
+            love.graphics.setColor(1, 0.5, 0.5)
+        elseif instance.level == 3 then
+            love.graphics.setColor(0.5, 0.7, 0.5)
+        elseif instance.level == 4 then
+            love.graphics.setColor(0.5, 0.5, 0.5)
+        end
         instance:draw()
+        if instance.animation.direction == "right" then
+            --love.graphics.setColor(1, 0.5, 0.5)
+            love.graphics.draw(instance.sprite, instance.quads[instance.animation.frame],instance.body:getX() - QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2)
+        else
+            love.graphics.draw(instance.sprite, instance.quads[instance.animation.frame],instance.body:getX()- QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+        end
+        
+        love.graphics.setColor(1, 1, 1)
+
     end
 end
 
@@ -174,16 +204,21 @@ function Enemy:draw()
     --love.graphics.print(angle, self.body:getX(), self.body:getY()+ 70)
     love.graphics.print(self.body:getX(),self.body:getX(), self.body:getY()+ 100)
     love.graphics.print(self.body:getY(),self.body:getX(), self.body:getY()+ 110)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
+    --love.graphics.setColor(1, 1, 1)
+    --love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.size)
     --love.graphics.scale(1)
+
+    --[[
+        
+    
     if self.animation.direction == "right" then
         love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
     else
         love.graphics.draw(self.sprite, self.quads[self.animation.frame],self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
     end
     
-   
+    love.graphics.setColor(1, 1, 1)
+    ]]
 end
 
 return Enemy
