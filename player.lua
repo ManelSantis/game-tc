@@ -11,9 +11,11 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.velY = speedY
     self.life = 100
     self.body = love.physics.newBody (World, self.x, self.y, "dynamic")
-    self.shape = love.physics.newCircleShape(self.size)
+    self.shape = love.physics.newRectangleShape(60,120)
     self.fixture = love.physics.newFixture(self.body, self.shape, 1)
     self.body:setLinearDamping( 0.4 )
+    self.body:setFixedRotation( true )
+
     self.type = "player"
 
     self.sprite = love.graphics.newImage("img/newIdle.png")
@@ -161,7 +163,8 @@ function Player:draw()
     else
         love.graphics.draw(self.gun,self.body:getX() +5,self.body:getY() + 5,self.gunAngle,-1,1,15,5)
     end
-
+    love.graphics.rotate(self.body:getAngle())
+    love.graphics.rectangle( "line",self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2, 60, 120)
 end
 
 return Player
