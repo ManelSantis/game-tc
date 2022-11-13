@@ -32,7 +32,7 @@ function love.load()
     music = love.audio.newSource("audio/Blast From The Past - Jeremy Black.mp3", "stream")
     music:setVolume(0.5)
     projectileSound = love.audio.newSource("audio/376694__daleonfire__laser.wav","stream")
-    Player:load(background:getWidth(), background:getHeight(), 30, 250, 250)
+    Player:load(background:getWidth(), background:getHeight(), 30, 100, 100)
     
     Enemy:load()
     Bullet:load(background:getWidth(), background:getHeight())

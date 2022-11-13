@@ -82,8 +82,8 @@ function Player:move(dt)
     self.jetSound:pause()
     if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
         if self.body:getX() < (self.lx - self.size - 10) then
-            --self.x = self.x + self.velX * dt
-            self.body:applyForce(self.velX, 0)
+            self.x = self.x + self.velX * dt
+            --self.body:applyForce(self.velX, 0)
         end
         self.animation.idle = false
         self.animation.direction = "right"
@@ -92,8 +92,8 @@ function Player:move(dt)
 
     if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
         if self.body:getX() > (0 + self.size + 10) then
-            --self.x = self.x - self.velX * dt
-            self.body:applyForce(-self.velX,0)
+            self.x = self.x - self.velX * dt
+            --self.body:applyForce(-self.velX,0)
         end
         self.animation.idle = false
         self.animation.direction = "left"
@@ -102,8 +102,8 @@ function Player:move(dt)
 
     if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
         if self.body:getY() < (self.ly - self.size - 40) then
-            --self.y = self.y + self.velY * dt
-            self.body:applyForce(0,self.velY)
+            self.y = self.y + self.velY * dt
+            --self.body:applyForce(0,self.velY)
         end
         self.animation.idle = false
         self.jetSound:play()
@@ -111,8 +111,8 @@ function Player:move(dt)
 
     if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
         if self.body:getY() > (0 + self.size + 20) then
-            --self.y = self.y - self.velY * dt
-            self.body:applyForce(0, -self.velY)
+            self.y = self.y - self.velY * dt
+            --self.body:applyForce(0, -self.velY)
         end
         self.animation.idle = false
         self.jetSound:play()
@@ -136,8 +136,8 @@ function Player:move(dt)
 
     
     
-    self.x,self.y =  self.body:getX(),self.body:getY()
-    --self.body:setPosition(self.x, self.y)
+    --self.x,self.y =  self.body:getX(),self.body:getY()
+    self.body:setPosition(self.x, self.y)
 end
 
 function Player:draw()
