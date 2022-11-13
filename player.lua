@@ -16,8 +16,8 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.body:setLinearDamping( 0.4 )
     self.type = "player"
 
-    self.sprite = love.graphics.newImage("img/char_idle.png")
-    self.sprite_Walk = love.graphics.newImage("img/walk.png")
+    self.sprite = love.graphics.newImage("img/newIdle.png")
+    self.sprite_Walk = love.graphics.newImage("img/newWalk.png")
     self.animation = {
             direction = "right",
             idle = false,

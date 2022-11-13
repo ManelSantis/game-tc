@@ -5,6 +5,7 @@ local Player = require("player")
 local Enemy = require("objects/enemy")
 local Bullet = require("objects/bullet")
 local Laser = require("objects/laser")
+local Obstacle = require("objects/obstacle")
 
 local atirar = true
 
@@ -41,6 +42,8 @@ function love.load()
     Enemy:addEnemy(2, 20, Player.x, Player.y, background:getWidth(), background:getHeight())
     countEnemies = #Enemy:activeEnemies()
     waveCount = countEnemies
+    
+    Obstacle:load(400,600)
 end
 
 function love.update(dt)
@@ -171,6 +174,8 @@ function love.draw()
     Laser.drawAll()
     Player:draw()
     Enemy.drawAll()
+
+    Obstacle:draw();
     cam:detach()
     love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
     love.graphics.print('shootTimer: ' .. shootTimer, 10,90)
