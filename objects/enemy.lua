@@ -11,6 +11,9 @@ function Enemy:addEnemy(_level, _size, playerX, playerY, limitX, limitY)
     local dice = math.random(1, 4)
     local _x, _y
     instance.sprite = love.graphics.newImage("img/alien_bigger.png")
+    instance.sprite2 = love.graphics.newImage("img/alien2.png")
+    instance.sprite3 = love.graphics.newImage("img/alien3.png")
+    instance.sprite4 = love.graphics.newImage("img/alien4.png")
     instance.animation = {
             direction = "right",
             idle = false,
@@ -180,22 +183,43 @@ end
 function Enemy.drawAll()
     for i,instance in ipairs(Enemies) do
         if instance.level == 1 then
-            love.graphics.setColor(1, 1, 1)
+            if instance.animation.direction == "right" then
+                --love.graphics.setColor(1, 0.5, 0.5)
+                love.graphics.draw(instance.sprite, instance.quads[instance.animation.frame],instance.body:getX() - QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2)
+            else
+                love.graphics.draw(instance.sprite, instance.quads[instance.animation.frame],instance.body:getX()- QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+            end
         elseif instance.level == 2 then
-            love.graphics.setColor(1, 0.5, 0.5)
+            if instance.animation.direction == "right" then
+                --love.graphics.setColor(1, 0.5, 0.5)
+                love.graphics.draw(instance.sprite2, instance.quads[instance.animation.frame],instance.body:getX() - QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2)
+            else
+                love.graphics.draw(instance.sprite2, instance.quads[instance.animation.frame],instance.body:getX()- QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+            end
         elseif instance.level == 3 then
-            love.graphics.setColor(0.5, 0.7, 0.5)
+            if instance.animation.direction == "right" then
+                --love.graphics.setColor(1, 0.5, 0.5)
+                love.graphics.draw(instance.sprite3, instance.quads[instance.animation.frame],instance.body:getX() - QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2)
+            else
+                love.graphics.draw(instance.sprite3, instance.quads[instance.animation.frame],instance.body:getX()- QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+            end
         elseif instance.level == 4 then
-            love.graphics.setColor(0.5, 0.5, 0.5)
+            if instance.animation.direction == "right" then
+                --love.graphics.setColor(1, 0.5, 0.5)
+                love.graphics.draw(instance.sprite4, instance.quads[instance.animation.frame],instance.body:getX() - QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2)
+            else
+                love.graphics.draw(instance.sprite4, instance.quads[instance.animation.frame],instance.body:getX()- QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
+            end
         end
         love.graphics.print(instance.life .. "/" .. instance.totalLife, instance.body:getX() - 25 , instance.body:getY() + 50 )
+        --[[
         if instance.animation.direction == "right" then
             --love.graphics.setColor(1, 0.5, 0.5)
             love.graphics.draw(instance.sprite, instance.quads[instance.animation.frame],instance.body:getX() - QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2)
         else
             love.graphics.draw(instance.sprite, instance.quads[instance.animation.frame],instance.body:getX()- QUAD_WIDTH / 2,instance.body:getY() -QUAD_HEIGH /2,0,-1,1,QUAD_WIDTH,0)
         end
-        
+        ]]
         love.graphics.setColor(1, 1, 1)
 
     end
