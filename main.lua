@@ -87,7 +87,7 @@ function love.update(dt)
         end
     end
     
-    DropsTimers()
+    DropsTimers(dt)
     
     countEnemies = #Enemy:activeEnemies()
     
@@ -117,11 +117,11 @@ function Spawn()
     end
 end
 
-function DropsTimers()
+function DropsTimers(dt)
     if LASER == true and END_LASER <= 15000 then
         ShootLaser()
         if laserShootTimer >=0 then
-            laserShootTimer = laserShootTimer -dt
+            laserShootTimer = laserShootTimer - dt
         end
         END_LASER = (love.timer.getTime() -  LASER_TIMER) * 1000
     else
