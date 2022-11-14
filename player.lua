@@ -82,6 +82,16 @@ function Player:move(dt)
 
     self.animation.idle = true
     self.jetSound:pause()
+
+    if SPEED == true then
+        self.velX = 300
+        self.velY = 300
+    else
+        self.velX = 100
+        self.velY = 100
+    end
+
+
     if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
         if self.body:getX() < (self.lx - self.size - 10) then
             self.x = self.x + self.velX * dt

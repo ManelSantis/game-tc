@@ -20,6 +20,7 @@ function love.keypressed(key, scancode, isrepeat)
 	if Scene.keypressed then Scene:keypressed(key, scancode, isrepeat) end
 end
 
+
 function love.touchpressed(id, x, y, dx, dy, p)
 	-- Call the touchpressed function of the current scene
 	if Scene.touchpressed then Scene:touchpressed(id, x, y, dx, dy, p) end
