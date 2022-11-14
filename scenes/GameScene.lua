@@ -40,13 +40,26 @@ INVENSIBLE = false
 INVENSIBLE_TIMER = 0
 END_INVENSIBLE = 0
 
+HEAL = 0
+
+PLAYER_DEAD = false
+
 function GameScene:load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
-    World:setCallbacks(beginContact, endContact)
 
     _G.background = love.graphics.newImage("img/background.png")
     heart = love.graphics.newImage("img/heart.png")
+    HEARTW, HEARTH = 32, 32
+    HEARTQW = 16
+    HEARTQH = HEARTH
+    
+    HEART_QUADS = {}
+
+    for i = 1, 2 do
+        HEART_QUADS[i] = love.graphics.newQuad(HEARTQW * (i-1),0, HEARTQW, HEARTQH, HEARTW, HEARTH)
+    end
+
 
     music = love.audio.newSource("audio/Blast From The Past - Jeremy Black.mp3", "stream")
     music:setVolume(0.5)
@@ -70,6 +83,12 @@ function GameScene:update(dt)
 		love.audio.play( music )
 	end
 
+    if PLAYER_DEAD == true then
+		music:stop();
+		changeScene("GameOverScene") --switch to Scene2
+	end
+
+
     if love.keyboard.isDown('n') then
         music:pause();
          changeScene("GameOverScene")
@@ -81,7 +100,7 @@ function GameScene:update(dt)
     _G.mX ,_G.mY = cam:mousePosition()
     
     World:update(dt)
-    Player:update(dt)
+    Player:update(dt, Enemy:activeEnemies())
     
     cam:lookAt(Player.body:getX(), Player.body:getY()) 
     Enemy.updateAll(dt, Player.body:getX(), Player.body:getY())
@@ -117,6 +136,14 @@ function GameScene:update(dt)
         table.remove(POSSIBLE_DROPS_X, i)
         table.remove(POSSIBLE_DROPS_Y, i)
     end
+
+    Player.life = Player.life + HEAL
+    
+    if (Player.life > 100) then
+        Player.life = 100
+    end
+
+    HEAL = 0
 end
 
 function Spawn()
@@ -236,11 +263,14 @@ function GameScene:draw()
     cam:detach()
     love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
 
-    for i = 1, Player.life, 10 do
-        if Player.life % 10 == 0 then
-            love.graphics.draw(heart,20 + i *3,50)
-
+    for i = 1, Player.life do
+        if i % 5 == 0 and not (i % 10 == 0) then
+            love.graphics.draw(heart, HEART_QUADS[1], 20 + i * 3, 50)
         end
+        if i % 10 == 0 then 
+            love.graphics.draw(heart, HEART_QUADS[2], 20 + i * 3, 50)
+        end
+        
     end
     --love.graphics.draw(heart,90,50)
     --love.graphics.draw(heart,130,50)

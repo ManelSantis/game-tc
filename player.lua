@@ -1,5 +1,10 @@
 local Player = {}
 _G.score = 0;
+
+TAKING_DAMAGE = false
+DMG_TIMER = 0
+END_DMG = 0
+
 function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.x = limit_x / 2
     self.y = limit_y / 2
@@ -44,9 +49,19 @@ function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.jetSound:setVolume(0.5)
 end
 
-function Player:update(dt)
+function Player:update(dt, enemies)
     self:move(dt)
     
+    if TAKING_DAMAGE == false and INVENSIBLE == false then
+        for i=1, #enemies do
+            local test = self:distance(enemies[i])
+            if test == true then
+                self:takeDamage(enemies[i].damage)
+                break
+            end
+        end
+    end
+
     local deltaX =  self.body:getX() - mX 
     local deltaY = self.body:getY() - mY
    
@@ -78,6 +93,31 @@ function Player:update(dt)
     --end
 end
 
+function Player:distance(enemy)
+    local auxX = math.abs(enemy.x - self.x)
+    local auxY = math.abs(enemy.y - self.y)
+
+    if (auxX > (60 / 2 + enemy.size)) then
+        return false
+    end 
+
+    if (auxY > (120 / 2 + enemy.size)) then
+        return false
+    end
+
+    if (auxX <= (60 / 2)) then
+        return true
+    end
+    
+    if (auxY <= (120 / 2)) then
+        return true
+    end
+
+    local cornerDistance_sq = (auxX - 60 / 2)^2 + (auxY - 120 / 2)^2;
+
+    return (cornerDistance_sq <= (enemy.size^2));
+end
+
 function Player:move(dt)
 
     self.animation.idle = true
@@ -89,6 +129,14 @@ function Player:move(dt)
     else
         self.velX = 100
         self.velY = 100
+    end
+
+    if TAKING_DAMAGE == true and END_DMG <= 750 then
+        self.velX = 500
+        self.velY = 500
+        END_DMG = (love.timer.getTime() -  DMG_TIMER) * 1000
+    else 
+        TAKING_DAMAGE = false
     end
 
 
@@ -152,8 +200,30 @@ function Player:move(dt)
     self.body:setPosition(self.x, self.y)
 end
 
+function Player:takeDamage(dmg)
+    self.life =  self.life - dmg
+
+    if (self.life <= 0) then
+        self.life = 0
+        PLAYER_DEAD = true
+    end
+
+    TAKING_DAMAGE = true
+    DMG_TIMER = love.timer.getTime()
+    END_DMG = 0
+end
+
 function Player:draw()
     --love.graphics.setColor(248 / 255, 255 / 255, 1 / 255)
+    if TAKING_DAMAGE == true or INVENSIBLE == true then
+        local r = math.random(0, 255)
+        local g = math.random(0, 255)
+        local b = math.random(0, 255)
+        love.graphics.setColor(r / 255, g / 255, b / 255)
+    end
+
+    love.graphics.print(self.life .. "/ 100 " , self.body:getX() - 25 , self.body:getY() + 70 )
+
     if self.animation.direction == "right" then
         if not self.animation.idle then
             love.graphics.draw(self.sprite_Walk, self.quads[self.animation.frame],self.body:getX() - QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2)
@@ -175,6 +245,8 @@ function Player:draw()
     end
     love.graphics.rotate(self.body:getAngle())
     love.graphics.rectangle( "line",self.body:getX()- QUAD_WIDTH / 2,self.body:getY() -QUAD_HEIGH /2, 60, 120)
+
+    love.graphics.setColor(1, 1, 1)
 end
 
 return Player

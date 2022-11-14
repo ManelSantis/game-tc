@@ -97,7 +97,7 @@ function Drop:removeDrop(index)
         end
 
         if self.type == 5 then
-            --CODE FOR LIFE
+            HEAL = HEAL + 10
         end
     end
     table.remove(Drops, index)
