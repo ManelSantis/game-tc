@@ -1,5 +1,5 @@
 local Player = {}
-
+_G.score = 0;
 function Player:load(limit_x, limit_y, _size, speedX, speedY)
     self.x = limit_x / 2
     self.y = limit_y / 2

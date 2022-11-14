@@ -87,6 +87,7 @@ function Enemy:update(dt, player_x, player_y, j)
 
     if self.life <= 0 then
         self.onScreen = false
+        score = score + 10
     end
 
     self:removeEnemy(j, self.onScreen)
@@ -166,6 +167,7 @@ function Enemy:removeEnemy(index, onScreen)
     if onScreen == false then
         table.remove(Enemies, index)
     end
+   
 end
 
 function Enemy:activeEnemies()
