@@ -3,7 +3,13 @@ local Enemies = {}
 
 Enemy.__index = Enemy
 
-function Enemy:load()    
+function Enemy:load()
+    if PLAYER_DEAD == true then
+        for i, j in ipairs(Enemies) do
+            Enemies[i] = nil
+        end
+    end
+    
 end
 
 function Enemy:addEnemy(_level, _size, playerX, playerY, limitX, limitY)

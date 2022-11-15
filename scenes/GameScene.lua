@@ -42,8 +42,6 @@ END_INVENSIBLE = 0
 
 HEAL = 0
 
-PLAYER_DEAD = false
-
 function GameScene:load()
     _G.cam = camera()
     World = love.physics.newWorld(0, 0)
@@ -76,6 +74,8 @@ function GameScene:load()
     waveCount = countEnemies
     
     Obstacle:load(400,600)
+
+    PLAYER_DEAD = false
 end
 
 function GameScene:update(dt)
